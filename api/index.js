@@ -13,9 +13,15 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const fastify_1 = __importDefault(require("fastify"));
+const dotenv_1 = __importDefault(require("dotenv"));
 const querystring_json_1 = __importDefault(require("./schemas/querystring.json"));
 const headers_json_1 = __importDefault(require("./schemas/headers.json"));
 const server = (0, fastify_1.default)();
+dotenv_1.default.config();
+const port = process.env.PORT || 4000;
+server.get("/", (request, reply) => __awaiter(void 0, void 0, void 0, function* () {
+    return "OK";
+}));
 server.get("/ping", (request, reply) => __awaiter(void 0, void 0, void 0, function* () {
     return "pong\n";
 }));
@@ -36,32 +42,31 @@ server.get("/auth", {
 }, (request, reply) => __awaiter(void 0, void 0, void 0, function* () {
     const { username, password } = request.query;
     const customerHeader = request.headers["h-Custom"];
-    console.log("username", username);
-    console.log("password", password);
     reply.code(200).send({ success: true });
     // it even works for wildcards
     reply.code(404).send({ error: "Not found" });
     return `logged in!`;
 }));
 server.route({
-    method: 'GET',
-    url: '/auth2',
+    method: "GET",
+    url: "/auth2",
     schema: {
         querystring: querystring_json_1.default,
-        headers: headers_json_1.default
+        headers: headers_json_1.default,
     },
     preHandler: (request, reply, done) => {
         const { username, password } = request.query;
-        const customerHeader = request.headers['h-Custom'];
+        const customerHeader = request.headers["h-Custom"];
         done();
     },
     handler: (request, reply) => {
         const { username, password } = request.query;
-        const customerHeader = request.headers['h-Custom'];
+        const customerHeader = request.headers["h-Custom"];
         reply.status(200).send({ username });
-    }
+    },
 });
-server.listen({ port: 8080 }, (err, address) => {
+console.log("process.env.PORT", process.env.PORT);
+server.listen({ port: Number(port) }, (err, address) => {
     if (err) {
         console.error(err);
         process.exit(1);

@@ -1,4 +1,5 @@
 import fastify from "fastify";
+import dotenv from  'dotenv'
 
 import QuerystringSchema from "./schemas/querystring.json";
 import HeadersSchema from "./schemas/headers.json";
@@ -8,6 +9,13 @@ import { HeadersSchema as HeadersSchemaInterface } from "./types/headers";
 
 const server = fastify();
 
+dotenv.config()
+
+const port = process.env.PORT || 4000;
+
+server.get("/", async (request, reply) => {
+  return "OK";
+});
 server.get("/ping", async (request, reply) => {
   return "pong\n";
 });
@@ -44,28 +52,29 @@ server.get<{
 );
 
 server.route<{
-    Querystring: QuerystringSchemaInterface,
-    Headers: HeadersSchemaInterface
-  }>({
-    method: 'GET',
-    url: '/auth2',
-    schema: {
-      querystring: QuerystringSchema,
-      headers: HeadersSchema
-    },
-    preHandler: (request, reply, done) => {
-      const { username, password } = request.query
-      const customerHeader = request.headers['h-Custom']
-      done()
-    },
-    handler: (request, reply) => {
-      const { username, password } = request.query
-      const customerHeader = request.headers['h-Custom']
-      reply.status(200).send({username});
-    }
-  })
+  Querystring: QuerystringSchemaInterface;
+  Headers: HeadersSchemaInterface;
+}>({
+  method: "GET",
+  url: "/auth2",
+  schema: {
+    querystring: QuerystringSchema,
+    headers: HeadersSchema,
+  },
+  preHandler: (request, reply, done) => {
+    const { username, password } = request.query;
+    const customerHeader = request.headers["h-Custom"];
+    done();
+  },
+  handler: (request, reply) => {
+    const { username, password } = request.query;
+    const customerHeader = request.headers["h-Custom"];
+    reply.status(200).send({ username });
+  },
+});
+console.log("process.env.PORT", process.env.PORT);
 
-server.listen({ port: 8080 }, (err, address) => {
+server.listen({ port: Number(port) }, (err, address) => {
   if (err) {
     console.error(err);
     process.exit(1);
