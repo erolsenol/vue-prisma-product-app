@@ -14,7 +14,7 @@ dotenv.config();
 const port = process.env.PORT || 5001;
 
 server.get("/", async (request, reply) => {
-  reply.code(200).send({ success: true });
+  return "OK";
 });
 server.get("/ping", async (request, reply) => {
   return "pong\n";
@@ -55,8 +55,8 @@ server.route<{
   Querystring: QuerystringSchemaInterface;
   Headers: HeadersSchemaInterface;
 }>({
-  method: "GET",
-  url: "/auth2",
+  method: "POST",
+  url: "/products",
   schema: {
     querystring: QuerystringSchema,
     headers: HeadersSchema,
