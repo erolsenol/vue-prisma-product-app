@@ -18,9 +18,9 @@ const querystring_json_1 = __importDefault(require("./schemas/querystring.json")
 const headers_json_1 = __importDefault(require("./schemas/headers.json"));
 const server = (0, fastify_1.default)();
 dotenv_1.default.config();
-const port = process.env.PORT || 4000;
+const port = process.env.PORT || 5001;
 server.get("/", (request, reply) => __awaiter(void 0, void 0, void 0, function* () {
-    return "OK";
+    reply.code(200).send({ success: true });
 }));
 server.get("/ping", (request, reply) => __awaiter(void 0, void 0, void 0, function* () {
     return "pong\n";
@@ -66,7 +66,7 @@ server.route({
     },
 });
 console.log("process.env.PORT", process.env.PORT);
-server.listen({ port: Number(port) }, (err, address) => {
+server.listen({ port: Number(port), host: "0.0.0.0" }, (err, address) => {
     if (err) {
         console.error(err);
         process.exit(1);

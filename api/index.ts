@@ -1,5 +1,5 @@
 import fastify from "fastify";
-import dotenv from  'dotenv'
+import dotenv from "dotenv";
 
 import QuerystringSchema from "./schemas/querystring.json";
 import HeadersSchema from "./schemas/headers.json";
@@ -9,12 +9,12 @@ import { HeadersSchema as HeadersSchemaInterface } from "./types/headers";
 
 const server = fastify();
 
-dotenv.config()
+dotenv.config();
 
-const port = process.env.PORT || 4000;
+const port = process.env.PORT || 5001;
 
 server.get("/", async (request, reply) => {
-  return "OK";
+  reply.code(200).send({ success: true });
 });
 server.get("/ping", async (request, reply) => {
   return "pong\n";
@@ -74,7 +74,7 @@ server.route<{
 });
 console.log("process.env.PORT", process.env.PORT);
 
-server.listen({ port: Number(port) }, (err, address) => {
+server.listen({ port: Number(port), host: "0.0.0.0" }, (err, address) => {
   if (err) {
     console.error(err);
     process.exit(1);

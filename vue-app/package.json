@@ -5,6 +5,7 @@
   "scripts": {
     "serve": "vue-cli-service serve",
     "build": "vue-cli-service build",
+    "start": "docker-compose down && docker-compose build --no-cache && docker-compose up",
     "lint": "vue-cli-service lint"
   },
   "dependencies": {

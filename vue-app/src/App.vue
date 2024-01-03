@@ -6,6 +6,18 @@
   <router-view />
 </template>
 
+<script>
+import { onMounted } from "vue";
+
+export default {
+  setup() {
+    onMounted(() => {
+      fetch("http://localhost:5001/");
+    });
+  },
+};
+</script>
+
 <style>
 #app {
   font-family: Avenir, Helvetica, Arial, sans-serif;
