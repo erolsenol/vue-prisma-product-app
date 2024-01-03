@@ -1,11 +1,13 @@
 {
   "name": "vue-prisma-product-app",
   "version": "1.0.0",
+  "type": "commonjs",
   "description": "",
-  "main": "index.js",
+  "main": "index.ts",
   "scripts": {
-    "build": "tsc -p tsconfig.json",
-    "start": "node index.js"
+    "build": "tsc --resolveJsonModule -p tsconfig.json",
+    "start": "node index.js",
+    "compile-schemas": "json2ts -i schemas -o types"
   },
   "keywords": [],
   "author": "",
@@ -15,6 +17,8 @@
   },
   "devDependencies": {
     "@types/node": "^20.10.6",
+    "json-schema-to-ts": "^3.0.0",
+    "json-schema-to-typescript": "^13.1.1",
     "typescript": "^5.3.3"
   }
 }
