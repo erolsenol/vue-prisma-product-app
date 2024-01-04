@@ -1,5 +1,5 @@
 import { FastifyInstance } from "fastify";
-import { ProductCreateSchema, ProductSchema } from "../schemas/products";
+import { ProductCreateSchema } from "../schemas/products";
 import { createProducts } from "../controllers/products.controller";
 
 async function productsRouter(fastify: FastifyInstance) {
