@@ -1,6 +1,12 @@
 import { FastifyInstance } from "fastify";
-import { CategoriesCreateSchema } from "../schemas/categories";
-import { createCategories } from "../controllers/categories.controller";
+import {
+  CategoriesCreateSchema,
+  CategoriesUpdateSchema,
+} from "../schemas/categories";
+import {
+  createCategories,
+  updateCategories,
+} from "../controllers/categories.controller";
 
 async function categoriesRouter(fastify: FastifyInstance) {
   fastify.route({
@@ -8,6 +14,12 @@ async function categoriesRouter(fastify: FastifyInstance) {
     url: "/",
     schema: CategoriesCreateSchema,
     handler: createCategories,
+  });
+  fastify.route({
+    method: "PUT",
+    url: "/:id",
+    schema: CategoriesUpdateSchema,
+    handler: updateCategories,
   });
 }
 
