@@ -6,16 +6,17 @@
   <router-view />
 </template>
 
-<script>
-import { onMounted } from "vue"
+<script setup>
+import { inject,onMounted } from 'vue'
 
-export default {
-  setup() {
-    onMounted(() => {
-      fetch("http://localhost:5001/")
-    })
-  },
-}
+const api = inject('api')
+console.log("api",api);
+
+onMounted(async () => {
+  console.log("12312");
+  const res = await  api.get()
+  console.log("res",res);
+})
 </script>
 
 <style>
