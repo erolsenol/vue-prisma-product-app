@@ -1,11 +1,13 @@
 import { FastifyReply, FastifyRequest } from "fastify";
 import prisma from "../../prisma";
+
 import { STANDARD } from "../helpers/constants";
 import { handleServerError } from "../helpers/errors";
-import { CategoryType, CategoryParamsIdType } from "types/categories";
-import { PaginationType } from "types/pagination";
 import { momentClient } from "../helpers/moment";
 import { getPaginationObj } from "../helpers";
+
+import { CategoryType, CategoryParamsIdType } from "types/categories";
+import { PaginationType } from "types/pagination";
 
 export const getAllCategories = async (
   request: FastifyRequest<{ Querystring: PaginationType }>,

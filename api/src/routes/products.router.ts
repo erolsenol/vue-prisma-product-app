@@ -3,10 +3,16 @@ import { ProductCreateSchema, ProductUpdateSchema,ProductGetSchema } from "../sc
 import {
   createProducts,
   updateProducts,
-  getProducts
+  getProducts,
+  getAllProducts
 } from "../controllers/products.controller";
 
 async function productsRouter(fastify: FastifyInstance) {
+  fastify.route({
+    method: "GET",
+    url: "/",
+    handler: getAllProducts,
+  });
   fastify.route({
     method: "POST",
     url: "/",
