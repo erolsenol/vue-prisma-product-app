@@ -97,3 +97,27 @@ export const getProducts = async (
     handleServerError(reply, e);
   }
 };
+
+export const deleteProducts = async (
+  request: FastifyRequest<{ Params: ProductParamsIdType }>,
+  reply: FastifyReply
+) => {
+  try {
+    const id = Number(request.params.id);
+    const deleted_time = momentClient.getDeleteTime(Date.now());
+
+    const product = await prisma.product.update({
+      where: {
+        id,
+        NOT: {
+          deleted: true,
+        },
+      },
+      data: { deleted: true, deleted_time },
+    });
+
+    reply.status(STANDARD.SUCCESS).send({ data: product });
+  } catch (e) {
+    handleServerError(reply, e);
+  }
+};

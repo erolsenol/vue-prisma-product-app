@@ -4,7 +4,8 @@ import {
   createProducts,
   updateProducts,
   getProducts,
-  getAllProducts
+  getAllProducts,
+  deleteProducts
 } from "../controllers/products.controller";
 
 async function productsRouter(fastify: FastifyInstance) {
@@ -30,6 +31,12 @@ async function productsRouter(fastify: FastifyInstance) {
     url: "/:id",
     schema: ProductGetSchema,
     handler: getProducts,
+  });
+  fastify.route({
+    method: "DELETE",
+    url: "/:id",
+    schema: ProductGetSchema,
+    handler: deleteProducts,
   });
 }
 
