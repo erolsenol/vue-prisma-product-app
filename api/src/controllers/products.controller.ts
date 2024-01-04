@@ -47,3 +47,20 @@ export const updateProducts = async (
     handleServerError(reply, e);
   }
 };
+
+export const getProducts = async (
+  request: FastifyRequest<{Params: ProductParamsIdType }>,
+  reply: FastifyReply
+) => {
+  try {
+    const id = Number(request.params.id);
+
+    const product = await prisma.product.findUnique({
+      where: { id },
+    });
+
+    reply.status(STANDARD.SUCCESS).send({ data: product });
+  } catch (e) {
+    handleServerError(reply, e);
+  }
+};

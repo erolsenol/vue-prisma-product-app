@@ -17,3 +17,7 @@ export const ProductUpdateSchema = {
     .prop("picture", S.string())
     .prop("category_id", S.number()),
 } as const;
+
+export const ProductGetSchema = {
+  params: S.object().prop("id", S.number().required()),
+} as const;
