@@ -13,6 +13,8 @@ model Category {
     picture         String
     createdAt       DateTime   @default(now())
     updatedAt       DateTime   @updatedAt
+    deleted         Boolean    @default(false)
+    deleted_time    DateTime?
     parent_id       Int?
     parent_category Category?  @relation("ParentRelation", fields: [parent_id], references: [id])
     child_category  Category[] @relation("ParentRelation")
@@ -20,11 +22,13 @@ model Category {
 }
 
 model Product {
-    id          Int      @id @default(autoincrement())
-    name        String
-    picture     String
-    createdAt   DateTime @default(now())
-    updatedAt   DateTime @updatedAt
-    category_id Int
-    category    Category @relation(fields: [category_id], references: [id])
+    id           Int       @id @default(autoincrement())
+    name         String
+    picture      String
+    createdAt    DateTime  @default(now())
+    updatedAt    DateTime  @updatedAt
+    deleted      Boolean   @default(false)
+    deleted_time DateTime?
+    category_id  Int
+    category     Category  @relation(fields: [category_id], references: [id])
 }

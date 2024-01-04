@@ -1,9 +1,9 @@
 import { FastifyReply, FastifyRequest } from "fastify";
+import prisma from "../../prisma";
 import { STANDARD } from "../helpers/constants";
 import { handleServerError } from "../helpers/errors";
-import prisma from "../../prisma";
-
 import { CategoryType, CategoryParamsIdType } from "types/categories";
+import { momentClient } from "../helpers/moment";
 
 export const createCategories = async (
   request: FastifyRequest<{ Body: CategoryType }>,
@@ -61,6 +61,27 @@ export const getCategories = async (
 
     reply.status(STANDARD.SUCCESS).send({ data: category });
   } catch (e) {
+    handleServerError(reply, e);
+  }
+};
+
+export const deleteCategories = async (
+  request: FastifyRequest<{ Params: CategoryParamsIdType }>,
+  reply: FastifyReply
+) => {
+  try {
+    const id = Number(request.params.id);
+    const deleted_time = momentClient.getDeleteTime(Date.now());
+    console.log("deleted_time", deleted_time);
+
+    const category = await prisma.category.update({
+      where: { id },
+      data: { deleted: true, deleted_time },
+    });
+
+    reply.status(STANDARD.SUCCESS).send({ data: category });
+  } catch (e) {
+    console.log("e",e);
     handleServerError(reply, e);
   }
 };
