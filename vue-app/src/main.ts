@@ -9,6 +9,7 @@ import messages from "./locales"
 
 import "bootstrap/dist/css/bootstrap.min.css"
 import "bootstrap"
+import "@/assets/css/index.scss"
 
 const i18n = createI18n({
     locale: 'en', // set locale

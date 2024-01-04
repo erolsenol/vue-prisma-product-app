@@ -12,5 +12,5 @@ import Header from "@/components/Header/Index.vue"
 @Options({
   components: { Header },
 })
-export default class HomeView extends Vue { }
+export default class ProductsView extends Vue { }
 </script>
