@@ -7,15 +7,13 @@
 </template>
 
 <script setup>
-import { inject,onMounted } from 'vue'
+import { inject, onMounted } from "vue"
 
-const api = inject('api')
-console.log("api",api);
+const api = inject("api")
 
 onMounted(async () => {
-  console.log("12312");
-  const res = await  api.get()
-  console.log("res",res);
+  const res = await api.get()
+  console.log("res", res)
 })
 </script>
 
