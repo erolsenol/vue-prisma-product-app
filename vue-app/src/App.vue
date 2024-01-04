@@ -7,13 +7,11 @@
 </template>
 
 <script setup>
-import { inject, onMounted } from "vue"
-
-const api = inject("api")
+import { onMounted } from "vue"
+import store from "@/store"
 
 onMounted(async () => {
-  const res = await api.get()
-  console.log("res", res)
+  store.dispatch("initData")
 })
 </script>
 
