@@ -7,15 +7,15 @@
 </template>
 
 <script>
-import { onMounted } from "vue";
+import { onMounted } from "vue"
 
 export default {
   setup() {
     onMounted(() => {
-      fetch("http://localhost:5001/");
-    });
+      fetch("http://localhost:5001/")
+    })
   },
-};
+}
 </script>
 
 <style>

@@ -1,8 +1,9 @@
 import fastify from "fastify";
 import dotenv from "dotenv";
 
-import productsRouter from "./routes/products.router";
-// import categoriesRouter from "./routes/categories.router";
+import categoriesRouter from "./routes/categories.router";
+// import productsRouter from "./routes/products.router";
+
 
 const server = fastify();
 
@@ -10,8 +11,8 @@ dotenv.config();
 
 const port = process.env.PORT || 5001;
 
-server.register(productsRouter, { prefix: "/api/products" });
-// server.register(categoriesRouter, { prefix: "/api/categories" });
+server.register(categoriesRouter, { prefix: "/api/categories" });
+// server.register(productsRouter, { prefix: "/api/products" });
 
 server.get("/", async (request, reply) => {
   return "OK";
