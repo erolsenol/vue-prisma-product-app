@@ -6,4 +6,9 @@ export const Product = Type.Object({
   category_id: Type.Number(),
 });
 
+export const ProductParamsId = Type.Object({
+  id: Type.Number(),
+});
+
 export type ProductType = Static<typeof Product>;
+export type ProductParamsIdType = Static<typeof ProductParamsId>;

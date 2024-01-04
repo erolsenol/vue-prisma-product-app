@@ -7,3 +7,13 @@ export const ProductCreateSchema = {
     .prop("picture", S.string().required())
     .prop("category_id", S.number().required()),
 } as const;
+
+export const ProductUpdateSchema = {
+  params: S.object().prop("id", S.string().required()),
+  body: S.object()
+    .minProperties(1)
+    .additionalProperties(false)
+    .prop("name", S.string())
+    .prop("picture", S.string())
+    .prop("category_id", S.number()),
+} as const;
