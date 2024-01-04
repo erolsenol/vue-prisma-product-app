@@ -3,7 +3,36 @@ import prisma from "../../prisma";
 import { STANDARD } from "../helpers/constants";
 import { handleServerError } from "../helpers/errors";
 import { CategoryType, CategoryParamsIdType } from "types/categories";
+import { PaginationType } from "types/pagination";
 import { momentClient } from "../helpers/moment";
+import { getPaginationObj } from "../helpers";
+
+export const getAllCategories = async (
+  request: FastifyRequest<{ Querystring: PaginationType }>,
+  reply: FastifyReply
+) => {
+  try {
+    const { page = 1, limit = 20 } = request.query;
+
+    const categories = await prisma.category.findMany({
+      skip: (page - 1) * limit,
+      take: Number(limit),
+      where: { deleted: false },
+      include: {
+        child_category: true,
+        products: true,
+      },
+    });
+
+    const count = await prisma.category.count({ where: { deleted: false } });
+
+    reply
+      .status(STANDARD.SUCCESS)
+      .send({ data: categories, pagination: getPaginationObj(page,limit,count) });
+  } catch (e) {
+    handleServerError(reply, e);
+  }
+};
 
 export const createCategories = async (
   request: FastifyRequest<{ Body: CategoryType }>,
@@ -72,16 +101,19 @@ export const deleteCategories = async (
   try {
     const id = Number(request.params.id);
     const deleted_time = momentClient.getDeleteTime(Date.now());
-    console.log("deleted_time", deleted_time);
 
     const category = await prisma.category.update({
-      where: { id },
+      where: {
+        id,
+        NOT: {
+          deleted: true,
+        },
+      },
       data: { deleted: true, deleted_time },
     });
 
     reply.status(STANDARD.SUCCESS).send({ data: category });
   } catch (e) {
-    console.log("e",e);
     handleServerError(reply, e);
   }
 };

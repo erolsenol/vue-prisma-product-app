@@ -10,5 +10,11 @@ export const ERRORS = {
 }
 
 export function handleServerError(reply: FastifyReply, error: any) {
-  return reply.status(ERROR500.statusCode).send(ERROR500);
+  const err = {...ERROR500}
+
+  if(error?.meta?.cause) {
+    err.cause = error.meta.cause
+  }
+
+  return reply.status(ERROR500.statusCode).send(err);
 }

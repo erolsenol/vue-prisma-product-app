@@ -8,10 +8,16 @@ import {
   createCategories,
   updateCategories,
   getCategories,
-  deleteCategories
+  deleteCategories,
+  getAllCategories
 } from "../controllers/categories.controller";
 
 async function categoriesRouter(fastify: FastifyInstance) {
+  fastify.route({
+    method: "GET",
+    url: "/",
+    handler: getAllCategories,
+  });
   fastify.route({
     method: "POST",
     url: "/",
