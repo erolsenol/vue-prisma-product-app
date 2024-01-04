@@ -11,7 +11,7 @@ export const createCategories = async (
 ) => {
   try {
     const { name, picture, parent_id } = request.body;
-    const product = await prisma.category.create({
+    const category = await prisma.category.create({
       data: {
         name,
         picture,
@@ -19,7 +19,7 @@ export const createCategories = async (
       },
     });
 
-    reply.status(STANDARD.SUCCESS).send({ data: product });
+    reply.status(STANDARD.SUCCESS).send({ data: category });
   } catch (e) {
     handleServerError(reply, e);
   }
@@ -32,8 +32,8 @@ export const updateCategories = async (
   try {
     const id = Number(request.params.id);
     const { name, picture, parent_id } = request.body;
-    
-    const product = await prisma.category.update({
+
+    const category = await prisma.category.update({
       where: { id },
       data: {
         name,
@@ -42,7 +42,24 @@ export const updateCategories = async (
       },
     });
 
-    reply.status(STANDARD.SUCCESS).send({ data: product });
+    reply.status(STANDARD.SUCCESS).send({ data: category });
+  } catch (e) {
+    handleServerError(reply, e);
+  }
+};
+
+export const getCategories = async (
+  request: FastifyRequest<{ Params: CategoryParamsIdType }>,
+  reply: FastifyReply
+) => {
+  try {
+    const id = Number(request.params.id);
+
+    const category = await prisma.category.findUnique({
+      where: { id },
+    });
+
+    reply.status(STANDARD.SUCCESS).send({ data: category });
   } catch (e) {
     handleServerError(reply, e);
   }

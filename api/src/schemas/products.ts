@@ -9,7 +9,7 @@ export const ProductCreateSchema = {
 } as const;
 
 export const ProductUpdateSchema = {
-  params: S.object().prop("id", S.string().required()),
+  params: S.object().prop("id", S.number().required()),
   body: S.object()
     .minProperties(1)
     .additionalProperties(false)

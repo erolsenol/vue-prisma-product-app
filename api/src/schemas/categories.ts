@@ -9,6 +9,7 @@ export const CategoriesCreateSchema = {
 } as const;
 
 export const CategoriesUpdateSchema = {
+  params: S.object().prop("id", S.number().required()),
   body: S.object()
     .minProperties(1)
     .additionalProperties(false)
@@ -17,10 +18,6 @@ export const CategoriesUpdateSchema = {
     .prop("parent_id", S.number().raw({ nullable: true })),
 } as const;
 
-export const CategoriesDeleteSchema = {
-  body: S.object()
-    .additionalProperties(false)
-    .prop("name", S.string().required())
-    .prop("picture", S.string().required())
-    .prop("parent_id", S.number().raw({ nullable: true })),
+export const CategoriesGetSchema = {
+  params: S.object().prop("id", S.number().required()),
 } as const;
