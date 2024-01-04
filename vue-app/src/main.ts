@@ -9,6 +9,7 @@ import messages from "./locales"
 
 import "bootstrap/dist/css/bootstrap.min.css"
 import "bootstrap"
+import 'remixicon/fonts/remixicon.css'
 import "@/assets/css/index.scss"
 
 const i18n = createI18n({
