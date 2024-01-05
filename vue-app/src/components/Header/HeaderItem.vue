@@ -4,7 +4,7 @@
       <i class="header-item-icon" :class="props.icon" :style="style">
       </i>
       <span>
-        {{ t(props.text) }}
+        {{ props.text }}
       </span>
     </a>
   </li>
