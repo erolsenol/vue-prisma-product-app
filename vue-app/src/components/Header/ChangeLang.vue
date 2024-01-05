@@ -18,9 +18,6 @@ function changeLocale() {
     
     i18n.global.locale.value = otherLang[0]
 }
-console.log("i18n.availableLocales",i18n.global.availableLocales);
-console.log("1", i18n.global);
-
 
 </script>
   
