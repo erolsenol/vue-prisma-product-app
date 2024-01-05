@@ -1,5 +1,5 @@
 import { createApp } from "vue"
-import { createI18n } from 'vue-i18n'
+import { createI18n } from "vue-i18n"
 
 import App from "./App.vue"
 import router from "./router"
@@ -9,13 +9,15 @@ import messages from "./locales"
 
 import "bootstrap/dist/css/bootstrap.min.css"
 import "bootstrap"
-import 'remixicon/fonts/remixicon.css'
+import "remixicon/fonts/remixicon.css"
 import "@/assets/css/index.scss"
 
-const i18n = createI18n({
-    locale: 'en', // set locale
-    messages, // set locale messages
-  })
+export const i18n = createI18n({
+  legacy: false,
+  globalInjection: true,
+  locale: "en",
+  messages,
+})
 
 const app = createApp(App)
 
