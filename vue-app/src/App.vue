@@ -2,11 +2,19 @@
   <component :is="$route.meta.layout || 'div'">
     <router-view />
   </component>
+  <Toast />
 </template>
 
 <script setup>
-import { onMounted } from "vue"
+import { onMounted, defineOptions } from "vue"
 import store from "@/store"
+
+import Toast from "@/components/Toast"
+
+defineOptions({
+  name: 'App',
+  components: { Toast },
+})
 
 onMounted(async () => {
   store.dispatch("initData")
