@@ -21,6 +21,7 @@ export const getAllCategories = async (
       take: Number(limit),
       where: { deleted: false },
       include: {
+        parent_category: true,
         child_category: true,
         products: true,
       },
@@ -30,7 +31,10 @@ export const getAllCategories = async (
 
     reply
       .status(STANDARD.SUCCESS)
-      .send({ data: categories, pagination: getPaginationObj(page,limit,count) });
+      .send({
+        data: categories,
+        pagination: getPaginationObj(page, limit, count),
+      });
   } catch (e) {
     handleServerError(reply, e);
   }

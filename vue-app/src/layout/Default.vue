@@ -21,7 +21,7 @@ import Sidebar from "@/components/Sidebar/Index.vue"
 export default class ProductsView extends Vue { }
 </script>
   
-<style scoped lang="scss">
+<style lang="scss">
 .page {
   display: flex;
   float: left;
@@ -30,10 +30,18 @@ export default class ProductsView extends Vue { }
 
   .page-left {
     width: 320px;
+    min-height: auto;
   }
 
   .page-right {
     width: 80%;
+    min-height: auto;
+    
+    overflow: scroll;
+  }
+  .page-table {
+    overflow-y: scroll;
+    max-height: calc(100vh - 260px);
   }
 }
 </style>

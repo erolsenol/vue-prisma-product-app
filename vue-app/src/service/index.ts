@@ -1,8 +1,14 @@
-import axios from "axios"
+import axios, {
+  AxiosRequestConfig,
+  InternalAxiosRequestConfig,
+  AxiosResponse,
+  Axios,
+} from "axios"
 
-const api = axios.create({
+const config: AxiosRequestConfig = {
   baseURL: process.env.baseURL || "http://localhost:5001",
   headers: {
+    Accept: "application/json",
     "Content-Type": "application/json",
   },
   transformRequest: [
@@ -15,6 +21,10 @@ const api = axios.create({
       return JSON.parse(data)
     },
   ],
-})
+}
+
+const api = axios.create(config)
+
+api.get
 
 export default api
