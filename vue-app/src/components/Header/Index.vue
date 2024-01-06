@@ -1,8 +1,8 @@
 <template>
   <header class="rounded-bottom-4">
-    <div class="container d-flex flex-wrap justify-content-center py-3 mb-4">
+    <div class="container d-flex flex-wrap justify-content-center py-3">
       <a href="/" class="d-flex align-items-center mb-3 mb-md-0 me-md-auto link-body-emphasis text-decoration-none">
-        <i class="ri-apps-fill app-icon me-2"></i>
+        <AppIcon />
         <span class="fs-4" v-t="'header_title'"></span>
       </a>
 
@@ -17,46 +17,29 @@
 
 <script setup lang="ts">
 import { ref, defineOptions } from 'vue'
+import { useI18n } from 'vue-i18n'
+
 import HeaderItem from "./Item.vue"
 import ChangeLang from "./ChangeLang.vue"
-import { useI18n } from 'vue-i18n'
+import AppIcon from "../Icons/AppIcon.vue"
+import HeaderData from "@/data/header"
 
 defineOptions({
   name: 'Header',
-  components: { HeaderItem, ChangeLang },
+  components: { HeaderItem, ChangeLang, AppIcon },
 })
 
 const { t } = useI18n()
 
-const items = ref([{
-  text: t('home'),
-  icon: "ri-home-2-line",
-  router: "/"
-},
-{
-  text: t('categories'),
-  icon: "ri-file-list-3-line",
-  router: "/categories"
-},
-{
-  text: t('products'),
-  icon: "ri-product-hunt-line",
-  router: "/products"
-}])
+const items = ref(HeaderData)
+
 </script>
 
 <style scoped lang="scss">
 header {
   background-color: var(--bs-gray-500);
-
-  .app-icon {
-    font-size: 2rem;
-  }
-}
-
-.header {
-  .container {
-    max-height: 80px;
-  }
+  box-sizing: border-box;
+  margin-bottom: 14px;
+  height: 90px;
 }
 </style>

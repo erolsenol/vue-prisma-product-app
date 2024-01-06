@@ -1,10 +1,10 @@
 <template>
   <li>
-    <router-link class="nav-link text-black border border-black border-opacity-50" :to="props.router">
+    <router-link class="nav-link text-black border border-black border-opacity-50" :to="{ name: props.router }">
       <i class="header-item-icon" :class="props.icon" :style="style">
       </i>
       <span>
-        {{ props.text }}
+        {{ $t(props.text) }}
       </span>
     </router-link>
   </li>
@@ -48,9 +48,9 @@ li {
       background-color: var(--bs-gray-400);
     }
   }
-}
 
-.nav-link:last-child() {
-  margin-right: 0;
+  .router-link-active {
+    background-color: var(--bs-gray-300);
+  }
 }
 </style>
