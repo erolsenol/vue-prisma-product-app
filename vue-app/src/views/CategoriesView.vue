@@ -1,6 +1,6 @@
 <template>
   <div class="container">
-    Products
+    Categories
   </div>
 </template>
 
@@ -11,5 +11,5 @@ import Header from "@/components/Header/Index.vue"
 @Options({
   components: { Header },
 })
-export default class ProductsView extends Vue { }
+export default class CategoriesView extends Vue { }
 </script>

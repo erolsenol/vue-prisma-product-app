@@ -1,7 +1,6 @@
 <template>
-  <Header />
   <div class="container">
-    Home
+    Hom
   </div>
 </template>
 

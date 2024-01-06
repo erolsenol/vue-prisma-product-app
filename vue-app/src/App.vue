@@ -1,9 +1,9 @@
 <template>
-  <!-- <nav>
-    <router-link to="/">Home</router-link> |
-    <router-link to="/about">About</router-link>
-  </nav> -->
-  <router-view />
+  <div>
+    <component :is="$route.meta.layout || 'div'">
+      <router-view />
+    </component>
+  </div>
 </template>
 
 <script setup>
