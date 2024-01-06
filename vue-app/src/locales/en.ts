@@ -7,6 +7,7 @@ export default {
   categories: "Categories",
   category: "Category",
   add: "Add",
+  create: "Create",
   update: "Update",
   delete: "Delete",
   save: "Save",

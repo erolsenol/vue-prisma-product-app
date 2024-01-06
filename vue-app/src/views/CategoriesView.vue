@@ -1,15 +1,15 @@
 <template>
   <div class="page-content categories">
-    <div class="page-content-title d-flex justify-content-between">
-      <p class="fs-4 text-start">{{ $t('categories') }}</p>
+    <div class="page-content-title pt-2 ps-2 d-flex justify-content-between align-items-center">
+      <p class="fs-4 text-start mb-0">{{ $t('categories') }}</p>
       <div class="page-content-action">
-        <button type="button" class="btn btn-outline-primary" data-bs-toggle="modal" data-bs-target="#common-modal"
+        <button type="button" class="btn btn-outline-primary me-3" data-bs-toggle="modal" data-bs-target="#common-modal"
           @click="showModal('create', -1)">{{
             $t('add') }}</button>
       </div>
     </div>
 
-    <div class="border-top my-3"></div>
+    <div class="border-top my-2"></div>
     <div class="page-table">
       <table class="table table-striped">
         <thead>
@@ -45,7 +45,9 @@
         </tbody>
       </table>
     </div>
-    <Pagination />
+    <div class="page-footer d-flex flex-row align-items-center justify-content-end">
+      <Pagination v-model="pagination" @selectPage="getItems" />
+    </div>
     <CommonModal :title="`${$t('category')} ${'add'}`" :footer="false" :style="{ textAlign: 'left' }">
       <template v-slot:content>
         <CategoryForm :type="formType" v-model="category" />
@@ -67,6 +69,7 @@ import { Vue } from "vue-class-component"
 import { ref, reactive, onMounted, defineOptions } from "vue";
 import { useI18n } from "vue-i18n"
 import { useStore } from "vuex";
+import qs from "qs"
 
 import { productType } from "@/types"
 import Pagination from "@/components/Pagination.vue"
@@ -74,7 +77,7 @@ import CategoryForm from "@/components/Category/Form.vue"
 import CommonModal from "@/components/CommonModal.vue"
 
 import api from "@/service";
-import { categoryType } from "@/types"
+import { categoryType, paginationType, tableType } from "@/types"
 
 defineOptions({
   name: 'CategoriesView',
@@ -84,15 +87,10 @@ defineOptions({
 const { t } = useI18n()
 const store = useStore()
 
-interface tableType {
-  headers: string[]
-  items: categoryType[]
-  products: productType[],
-  parent_category: categoryType
-  child_category: categoryType[]
-}
 
-let formType = ref<(string)>("")
+
+let pagination: paginationType = ref({})
+let formType = ref<(string)>("create")
 let category = ref<(categoryType)>({
   id: 0,
   name: "",
@@ -125,7 +123,7 @@ async function itemAction() {
       case "update":
         response = await api.put("/api/categories/" + data.id, data)
         break;
-        case "delete":
+      case "delete":
         response = await api.delete("/api/categories/" + data.id)
         break;
 
@@ -162,10 +160,12 @@ onMounted(async () => {
   await getItems()
 })
 
-async function getItems() {
-  const response = await api.get("/api/categories")
+async function getItems(page = 1) {
+  console.log("page", page);
+  const response = await api.get(`/api/categories?page=${page}`)
   if (response.status === 200) {
     table.items = response.data.data
+    pagination.value = response.data.pagination
   }
 }
 

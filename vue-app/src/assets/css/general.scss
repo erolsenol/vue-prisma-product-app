@@ -1,7 +1,13 @@
+.page-right {
+  margin-left: 2rem;
+  
+}
 .page-content {
-  margin: 0 1rem;
-  padding: 0 1rem;
+  height: 100%;
   .page-content-title {
     color: var(--bs-gray-700);
+  }
+  .page-footer {
+    min-height: 50px;
   }
 }

@@ -25,3 +25,19 @@ export interface stateType {
   categories: categoryType[]
   toastItems: toastType[]
 }
+
+export interface paginationType {
+  page: number
+  limit: number
+  count: number
+  totalPage: number
+}
+
+export interface tableType {
+  headers: string[]
+  items: categoryType[]
+  products: productType[]
+  parent_category: categoryType
+  child_category: categoryType[]
+  actions: object[]
+}

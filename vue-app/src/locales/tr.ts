@@ -7,6 +7,7 @@ export default {
   categories: "Kategoriler",
   category: "Kategori",
   add: "Ekle",
+  create: "Ekle",
   update: "Güncelle",
   delete: "Sil",
   save: "Kaydet",

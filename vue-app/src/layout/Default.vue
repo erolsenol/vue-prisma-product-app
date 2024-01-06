@@ -41,7 +41,7 @@ export default class LayoutDefault extends Vue { }
   }
   .page-table {
     overflow-y: scroll;
-    max-height: calc(100vh - 260px);
+    max-height: calc(100vh - 220px);
   }
 }
 </style>
