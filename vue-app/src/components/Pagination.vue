@@ -1,22 +1,14 @@
 <template>
-    <div>pagination</div>
+    <div>{{ model }}</div>
 </template>
   
 <script setup lang="ts">
-import { defineProps, defineOptions } from "vue"
+import { defineModel, defineOptions } from "vue"
 
 defineOptions({
     name: 'Paginations',
 })
-
-export interface Props {
-    text: string
-    icon: string
-    size: number
-    router: string
-}
-
-const props = defineProps<Props>()
+const model = defineModel()
 
 </script>
   

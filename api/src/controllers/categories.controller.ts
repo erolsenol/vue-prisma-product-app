@@ -14,7 +14,11 @@ export const getAllCategories = async (
   reply: FastifyReply
 ) => {
   try {
-    const { page = 1, limit = 20 } = request.query;
+    let { page = 1, limit = 20, all = 0 } = request.query;
+
+    if (all == 1) {
+      limit = limit * 1000;
+    }
 
     const categories = await prisma.category.findMany({
       skip: (page - 1) * limit,
@@ -29,12 +33,10 @@ export const getAllCategories = async (
 
     const count = await prisma.category.count({ where: { deleted: false } });
 
-    reply
-      .status(STANDARD.SUCCESS)
-      .send({
-        data: categories,
-        pagination: getPaginationObj(page, limit, count),
-      });
+    reply.status(STANDARD.SUCCESS).send({
+      data: categories,
+      pagination: getPaginationObj(page, limit, count),
+    });
   } catch (e) {
     handleServerError(reply, e);
   }

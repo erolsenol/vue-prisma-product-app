@@ -11,6 +11,7 @@
           <HeaderItem :text="item.text" :icon="item.icon" :size="26" :router="item.router" />
         </template>
       </ul>
+      <ChangeLang />
     </div>
   </header>
 </template>

@@ -18,7 +18,7 @@ import Sidebar from "@/components/Sidebar/Index.vue"
 @Options({
   components: { Header, Sidebar },
 })
-export default class ProductsView extends Vue { }
+export default class LayoutDefault extends Vue { }
 </script>
   
 <style lang="scss">

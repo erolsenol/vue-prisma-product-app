@@ -8,18 +8,14 @@
 import { Options, Vue } from "vue-class-component"
 import Header from "@/components/Header/Index.vue"
 
-// import { categoryType } from "@/views/CategoriesView.vue"
+import { categoryType, productType } from "@/types"
 
-export interface productType {
-  id: number
-  name: string
-  picture: string
-}
+
 
 interface tableType {
   headers: string[]
   items: productType[]
   products: object[],
-  // category: categoryType
+  category: categoryType
 }
 </script>
