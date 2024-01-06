@@ -1,5 +1,5 @@
 <template>
-  <div class="container">
+  <div>
     Categories
   </div>
 </template>
@@ -13,3 +13,7 @@ import Header from "@/components/Header/Index.vue"
 })
 export default class CategoriesView extends Vue { }
 </script>
+
+<style scoped lang="scss">
+
+</style>

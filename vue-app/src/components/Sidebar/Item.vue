@@ -5,7 +5,6 @@
             <i class="header-item-icon w-50" :class="props.icon" :style="style">
             </i>
             <span class="w-50">{{ $t(props.text) }}</span>
-
         </router-link>
     </li>
 </template>

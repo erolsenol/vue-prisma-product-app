@@ -33,7 +33,7 @@ const items = ref(HeaderData)
 <style scoped lang="scss">
 .sidebar {
     background-color: var(--bs-gray-500);
-    width: 320px;
-    min-height: calc(100% - 104px)
+    width: 100%;
+    height: 100%
 }
 </style>
