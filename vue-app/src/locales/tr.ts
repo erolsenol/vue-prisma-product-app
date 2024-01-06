@@ -19,4 +19,5 @@ export default {
   parent: "Üst Eleman",
   child: "Alt Eleman",
   error: "Error",
+  select: "Seçiniz",
 }

@@ -4,7 +4,7 @@
       <p class="fs-4 text-start">{{ $t('categories') }}</p>
       <div class="page-content-action">
         <button type="button" class="btn btn-outline-primary" data-bs-toggle="modal" data-bs-target="#common-modal"
-          @click="modalOpen('create')">{{
+          @click="showModal('create', -1)">{{
             $t('add') }}</button>
       </div>
     </div>
@@ -25,8 +25,12 @@
                   {{ t('actions') }}
                 </button>
                 <ul class="dropdown-menu">
-                  <li><a class="dropdown-item text-success" href="#">{{ t('update') }}</a></li>
-                  <li><a class="dropdown-item text-danger" href="#">{{ t('delete') }}</a></li>
+                  <li><a class="dropdown-item text-primary" data-bs-toggle="modal" data-bs-target="#common-modal"
+                      @click="showModal('update', item.id)">{{ t('update') }}</a>
+                  </li>
+                  <li><a class="dropdown-item text-danger" data-bs-toggle="modal" data-bs-target="#common-modal"
+                      @click="showModal('delete', item.id)">{{ t('delete') }}</a>
+                  </li>
                 </ul>
               </div>
             </th>
@@ -44,13 +48,14 @@
     <Pagination />
     <CommonModal :title="`${$t('category')} ${'add'}`" :footer="false" :style="{ textAlign: 'left' }">
       <template v-slot:content>
-        <CategoryForm v-model="category" />
+        <CategoryForm :type="formType" v-model="category" />
       </template>
       <template v-slot:footer>
         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
           {{ $t('close') }}
         </button>
-        <button type="button" class="btn btn-primary" @click="itemAction">{{ $t('save') }}</button>
+        <button type="button" class="btn" :class="formType === 'delete' ? 'btn-danger' : 'btn-primary'"
+          @click="itemAction">{{ $t(formType) }}</button>
       </template>
     </CommonModal>
 
@@ -62,7 +67,6 @@ import { Vue } from "vue-class-component"
 import { ref, reactive, onMounted, defineOptions } from "vue";
 import { useI18n } from "vue-i18n"
 import { useStore } from "vuex";
-import { Modal } from "bootstrap";
 
 import { productType } from "@/types"
 import Pagination from "@/components/Pagination.vue"
@@ -99,13 +103,14 @@ let table: tableType = reactive({
   headers: ['actions', 'id', 'name', 'picture', 'product', 'parent', 'child',],
   actions: [{ text: 'update', func: itemAction }, { text: 'delete', func: itemAction }]
 })
-let formData = reactive({ type: "", id: 0 })
+
+
 
 async function itemAction() {
   const data = {
     ...category.value,
   }
-  
+
   if (category.value.parent_id && category.value.parent_id.includes("-")) {
     const parenIdArr = category.value.parent_id.split("-")
     data.parent_id = Number(parenIdArr[0])
@@ -117,12 +122,19 @@ async function itemAction() {
       case "create":
         response = await api.post("/api/categories", data)
         break;
+      case "update":
+        response = await api.put("/api/categories/" + data.id, data)
+        break;
+        case "delete":
+        response = await api.delete("/api/categories/" + data.id)
+        break;
 
       default:
         break;
     }
 
     if (response?.status === 200 || response?.status === 201) {
+      await getItems()
       document.querySelector("#common-modal-close").click()
     }
   } catch (error) {
@@ -133,16 +145,29 @@ async function itemAction() {
   }
 }
 
-function modalOpen(type: string) {
+async function showModal(type: string, id: number) {
+  if (id > -1) {
+    await getItem(id)
+  }
   formType.value = type
 }
-onMounted(async () => {
 
+async function getItem(id: number) {
+  const response = await api.get("/api/categories/" + id)
+  if (response.status === 200) {
+    category.value = response.data.data
+  }
+}
+onMounted(async () => {
+  await getItems()
+})
+
+async function getItems() {
   const response = await api.get("/api/categories")
   if (response.status === 200) {
     table.items = response.data.data
   }
-})
+}
 
 </script>
 

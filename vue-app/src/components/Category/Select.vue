@@ -1,8 +1,8 @@
 <template>
     <div class="category-select">
         <label for="exampleDataList" class="form-label">{{ $t('category') }}</label>
-        <input v-model="model" class="form-control" list="datalistOptions" id="exampleDataList"
-            placeholder="Type to search...">
+        <input v-model="model" :disabled="props.disabled" class="form-control" list="datalistOptions" id="exampleDataList"
+            :placeholder="`${$t('category')} ${$t('select')}`">
         <datalist id="datalistOptions">
             <option :value="`${item.id}-${item.name}`" v-for="(item, index) in items" :key="index" />
         </datalist>
@@ -11,8 +11,7 @@
   
 <script setup lang="ts" generic="CategorySelect extends Vue">
 import { Vue } from "vue-class-component"
-import { ref, onMounted, defineOptions, defineModel } from "vue";
-import { useI18n } from "vue-i18n"
+import { ref, onMounted, defineOptions, defineModel, defineProps } from "vue";
 
 import api from "@/service";
 import { categoryType } from "@/types"
@@ -22,10 +21,10 @@ defineOptions({
     components: {},
 })
 
+const props = defineProps<{ disabled: boolean }>()
 
 const model = defineModel()
 
-const { t } = useI18n()
 
 let items = ref<categoryType[]>([])
 

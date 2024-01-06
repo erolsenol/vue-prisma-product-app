@@ -19,4 +19,5 @@ export default {
   parent: "Parent",
   child: "Child",
   error: "Hata",
+  select: "Select",
 }
