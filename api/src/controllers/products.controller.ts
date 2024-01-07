@@ -94,7 +94,7 @@ export const updateProducts = async (
       where: { id },
       data: {
         name,
-        picture,
+        picture: picture_name,
         category_id,
       },
     });

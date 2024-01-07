@@ -6,7 +6,7 @@
         </div>
         <div class="mb-3">
             <label for="category-picture" class="form-label">{{ $t('picture') }}</label>
-            <input type="file" :disabled="formDisable" class="form-control" id="category-picture"
+            <input type="file" :disabled="formDisable"  accept="image/*" class="form-control" id="category-picture"
                 @input="(e) => imageInput(e)">
         </div>
         <div class="mb-3">

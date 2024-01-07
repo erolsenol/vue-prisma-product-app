@@ -85,6 +85,7 @@ defineOptions({
 const { t } = useI18n()
 const store = useStore()
 
+const productPictureEl = ref(null)
 let pagination = ref<paginationType>({})
 let formType = ref<(string)>("create")
 let product = ref<productType>({})
@@ -116,7 +117,9 @@ async function itemAction() {
     picture_name: pictureName.value
   }
 
-  if (product.value.category_id && product.value.category_id.includes("-")) {
+  
+  const categoryId = product?.value?.category_id
+  if (typeof categoryId !== "number" && categoryId.includes("-")) {
     const parenIdArr = product.value.category_id.split("-")
     data.category_id = Number(parenIdArr[0])
   }
@@ -151,9 +154,7 @@ async function itemAction() {
 }
 
 async function showModal(type: string, id: number) {
-  if (type == "create") {
-    product.value = {}
-  }
+  product.value = {}
   if (id > -1) {
     await getItem(id)
   }
@@ -180,6 +181,4 @@ async function getItems(page = 1, limit = 20) {
 
 </script>
 
-<style scoped lang="scss">
-
-</style>
+<style scoped lang="scss"></style>

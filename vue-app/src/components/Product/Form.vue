@@ -7,7 +7,7 @@
         <img v-if="model.picture" :src="model.picture" class="img-thumbnail">
         <div class="mb-3">
             <label for="product-picture" class="form-label">{{ $t('picture') }}</label>
-            <input type="file" :disabled="formDisable" class="form-control" id="product-picture"
+            <input type="file" :disabled="formDisable" accept="image/*" ref="productPictureEl" class="form-control" id="product-picture"
                 @input="(e) => imageInput(e)">
         </div>
         <div class="mb-3">
