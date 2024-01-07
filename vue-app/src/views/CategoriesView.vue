@@ -161,8 +161,6 @@ onMounted(async () => {
 })
 
 async function getItems(page = 1, limit = 20) {
-  console.log("page",page);
-  console.log("limit",limit);
   const response = await api.get(`/api/categories?page=${page}&limit=${limit}`)
   if (response.status === 200) {
     table.items = response.data.data
