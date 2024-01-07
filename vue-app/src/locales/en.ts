@@ -21,4 +21,7 @@ export default {
   child: "Child",
   error: "Hata",
   select: "Select",
+  page: "Page",
+  limit: "Limit",
+  go: "Go",
 }

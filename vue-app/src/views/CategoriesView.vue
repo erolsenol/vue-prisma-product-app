@@ -45,7 +45,7 @@
         </tbody>
       </table>
     </div>
-    <div class="page-footer d-flex flex-row align-items-center justify-content-end">
+    <div class="page-footer d-flex flex-row mt-0 align-items-center justify-content-end">
       <Pagination v-model="pagination" @selectPage="getItems" />
     </div>
     <CommonModal :title="`${$t('category')} ${'add'}`" :footer="false" :style="{ textAlign: 'left' }">
@@ -160,9 +160,10 @@ onMounted(async () => {
   await getItems()
 })
 
-async function getItems(page = 1) {
-  console.log("page", page);
-  const response = await api.get(`/api/categories?page=${page}`)
+async function getItems(page = 1, limit = 20) {
+  console.log("page",page);
+  console.log("limit",limit);
+  const response = await api.get(`/api/categories?page=${page}&limit=${limit}`)
   if (response.status === 200) {
     table.items = response.data.data
     pagination.value = response.data.pagination

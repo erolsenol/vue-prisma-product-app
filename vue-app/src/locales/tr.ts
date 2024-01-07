@@ -21,4 +21,7 @@ export default {
   child: "Alt Eleman",
   error: "Error",
   select: "Seçiniz",
+  page: "Sayfa",
+  limit: "Limit",
+  go: "Git",
 }
