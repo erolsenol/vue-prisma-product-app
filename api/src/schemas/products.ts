@@ -4,7 +4,7 @@ export const ProductCreateSchema = {
   body: S.object()
     .additionalProperties(false)
     .prop("name", S.string().required())
-    .prop("picture", S.string().required())
+    .prop("picture", S.string())
     .prop("category_id", S.number().required()),
 } as const;
 

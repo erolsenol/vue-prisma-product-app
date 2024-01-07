@@ -2,6 +2,7 @@ import fastify from "fastify";
 import cors from "@fastify/cors";
 import dotenv from "dotenv";
 
+
 import categoriesRouter from "./routes/categories.router";
 import productsRouter from "./routes/products.router";
 
@@ -11,9 +12,11 @@ dotenv.config();
 
 const port = process.env.PORT || 5001;
 
-server.register(cors, {
-  // put your options here
-});
+server.register(cors, {});
+server.register(require('@fastify/multipart'), {
+  addToBody: true
+})
+
 
 server.register(categoriesRouter, { prefix: "/api/categories" });
 server.register(productsRouter, { prefix: "/api/products" });

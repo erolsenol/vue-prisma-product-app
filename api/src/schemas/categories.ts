@@ -4,7 +4,7 @@ export const CategoriesCreateSchema = {
   body: S.object()
     .additionalProperties(false)
     .prop("name", S.string().required())
-    .prop("picture", S.string().required())
+    .prop("picture", S.string())
     .prop("parent_id", S.number().raw({ nullable: true })),
 } as const;
 

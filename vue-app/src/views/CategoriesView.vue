@@ -48,7 +48,7 @@
     <div class="page-footer d-flex flex-row mt-0 align-items-center justify-content-end">
       <Pagination v-model="pagination" @selectPage="getItems" />
     </div>
-    <CommonModal :title="`${$t('category')} ${'add'}`" :footer="false" :style="{ textAlign: 'left' }">
+    <CommonModal :title="`${$t('category')} ${formType}`" :footer="false" :style="{ textAlign: 'left' }">
       <template v-slot:content>
         <CategoryForm :type="formType" v-model="category" />
       </template>
@@ -71,7 +71,6 @@ import { useI18n } from "vue-i18n"
 import { useStore } from "vuex";
 import qs from "qs"
 
-import { productType } from "@/types"
 import Pagination from "@/components/Pagination.vue"
 import CategoryForm from "@/components/Category/Form.vue"
 import CommonModal from "@/components/CommonModal.vue"
@@ -144,6 +143,9 @@ async function itemAction() {
 }
 
 async function showModal(type: string, id: number) {
+  if (type == "create") {
+    category.value = {}
+  }
   if (id > -1) {
     await getItem(id)
   }

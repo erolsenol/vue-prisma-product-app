@@ -10,7 +10,7 @@ generator client {
 model Category {
     id              Int        @id @default(autoincrement())
     name            String
-    picture         String
+    picture         String?
     createdAt       DateTime   @default(now())
     updatedAt       DateTime   @updatedAt
     deleted         Boolean    @default(false)
@@ -24,7 +24,7 @@ model Category {
 model Product {
     id           Int       @id @default(autoincrement())
     name         String
-    picture      String
+    picture      String?
     createdAt    DateTime  @default(now())
     updatedAt    DateTime  @updatedAt
     deleted      Boolean   @default(false)

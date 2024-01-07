@@ -12,6 +12,7 @@ export interface productType {
   id: number
   name: string
   picture: string
+  category_id: number
   category: categoryType
 }
 
