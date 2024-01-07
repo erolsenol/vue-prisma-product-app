@@ -14,6 +14,10 @@
 
 ###
 
+<p align="left">Open the terminal inside the api folder and run the npm run prisma:deploy command</p>
+
+###
+
 <p align="left">You can use the application by opening your "http://localhost:8080" address from your browser.</p>
 
 ###
