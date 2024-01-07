@@ -10,7 +10,7 @@
 
 ###
 
-<p align="left">run this command "docker-compose up" in the root folder of the project</p>
+<p align="left">Run this command "docker-compose up" in the root folder of the project</p>
 
 ###
 
