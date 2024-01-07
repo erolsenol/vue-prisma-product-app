@@ -10,7 +10,7 @@ COPY . .
 
 RUN npm run build
 
-RUN npm run prisma:deploy
+# RUN npm run prisma:deploy
 
 EXPOSE 5001
 
