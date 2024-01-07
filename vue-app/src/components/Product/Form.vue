@@ -29,7 +29,7 @@ defineOptions({
 })
 const emit = defineEmits(['fileInput'])
 const props = defineProps<{ type: string }>()
-const model: productType | any = defineModel({ default: () => ({}) })
+const model = defineModel<productType>({ default: () => ({}) })
 
 const formDisable = computed(() => {
     return props.type === "delete"

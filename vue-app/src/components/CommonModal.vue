@@ -26,7 +26,7 @@
   
 <script setup lang="ts" generic="CommonModal extends Vue">
 import { Vue } from "vue-class-component"
-import { defineProps, defineOptions, useAttrs } from "vue";
+import { defineProps, defineOptions } from "vue";
 import { useI18n } from "vue-i18n"
 
 defineOptions({
@@ -34,7 +34,7 @@ defineOptions({
     components: {},
 })
 
-const attrs = useAttrs()
+
 const { t } = useI18n()
 
 interface Props {

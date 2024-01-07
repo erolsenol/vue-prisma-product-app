@@ -1,9 +1,4 @@
-import axios, {
-  AxiosRequestConfig,
-  InternalAxiosRequestConfig,
-  AxiosResponse,
-  Axios,
-} from "axios"
+import axios, { AxiosRequestConfig } from "axios"
 
 const config: AxiosRequestConfig = {
   baseURL: process.env.baseURL || "http://localhost:5001",

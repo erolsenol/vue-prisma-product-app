@@ -1,1 +1,0 @@
-# vue-prisma-product-app

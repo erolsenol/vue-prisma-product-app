@@ -71,7 +71,6 @@ import { Vue } from "vue-class-component"
 import { ref, reactive, onMounted, defineOptions } from "vue";
 import { useI18n } from "vue-i18n"
 import { useStore } from "vuex";
-import qs from "qs"
 
 import Pagination from "@/components/Pagination.vue"
 import CategoryForm from "@/components/Category/Form.vue"

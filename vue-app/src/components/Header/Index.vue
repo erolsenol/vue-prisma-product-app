@@ -30,8 +30,6 @@ defineOptions({
   components: { HeaderItem, ChangeLang, AppIcon },
 })
 
-const { t } = useI18n()
-
 const items = ref(HeaderData)
 
 </script>

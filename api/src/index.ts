@@ -19,10 +19,10 @@ server.register(require("@fastify/multipart"), {
 server.register(categoriesRouter, { prefix: "/api/categories" });
 server.register(productsRouter, { prefix: "/api/products" });
 
-server.get("/", async (request, reply) => {
+server.get("/", async () => {
   return { message: "OK" };
 });
-server.get("/ping", async (request, reply) => {
+server.get("/ping", async () => {
   return { message: "pong" };
 });
 

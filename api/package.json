@@ -7,10 +7,10 @@
     "build": "tsc --resolveJsonModule -p tsconfig.json",
     "start": "node build/src/index.js | pino-pretty --colorize",
     "dev": "ts-node-dev ./src/index.ts",
-    "prebuild": "npm run prisma:generate",
     "prisma:generate": "npx prisma generate",
     "prisma:migrate": "npx prisma migrate dev",
     "prisma:db-push": "npx prisma db push",
+    "prisma:deploy": "npx prisma migrate deploy",
     "compile-schemas": "json2ts -i schemas -o types"
   },
   "prisma": {

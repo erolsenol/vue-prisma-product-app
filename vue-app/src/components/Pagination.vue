@@ -30,7 +30,7 @@
 </template>
   
 <script setup lang="ts">
-import { defineModel, defineOptions, computed, defineEmits, watch, ref } from "vue"
+import { defineModel, defineOptions, computed, defineEmits, ref } from "vue"
 import { paginationType } from "@/types";
 
 defineOptions({

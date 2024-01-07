@@ -1,19 +1,5 @@
 version: '3.8'
 services:
-  frontend:
-    build: ./vue-app
-    container_name: vue-app
-    depends_on:
-      - backend
-    ports:
-      - 8080:8080
-  backend:
-    build: ./api
-    container_name: fastify-api
-    depends_on:
-      - db
-    ports:
-      - 5001:5001
   db:
     image: mysql
     container_name: fastify-db
@@ -25,3 +11,23 @@ services:
       MYSQL_ALLOW_EMPTY_PASSWORD: 0
     ports:
       - 3306:3306
+
+  backend:
+    build: ./api
+    container_name: fastify-api
+    depends_on:
+      "db":
+        condition: service_healthy
+      "frontend":
+        condition: service_healthy
+    ports:
+      - 5001:5001
+
+  frontend:
+    build: ./vue-app
+    container_name: vue-app
+    depends_on:
+      "db":
+        condition: service_healthy
+    ports:
+      - 8080:8080
