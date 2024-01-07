@@ -28,6 +28,7 @@
     "dotenv": "^16.3.1",
     "fastify": "^4.25.2",
     "fluent-json-schema": "^4.2.1",
+    "fs": "^0.0.1-security",
     "moment": "^2.30.1",
     "prisma": "^5.7.1"
   },

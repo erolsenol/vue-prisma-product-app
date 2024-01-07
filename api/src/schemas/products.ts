@@ -5,6 +5,7 @@ export const ProductCreateSchema = {
     .additionalProperties(false)
     .prop("name", S.string().required())
     .prop("picture", S.string())
+    .prop("picture_name", S.string())
     .prop("category_id", S.number().required()),
 } as const;
 
@@ -15,6 +16,7 @@ export const ProductUpdateSchema = {
     .additionalProperties(false)
     .prop("name", S.string())
     .prop("picture", S.string())
+    .prop("picture_name", S.string())
     .prop("category_id", S.number()),
 } as const;
 

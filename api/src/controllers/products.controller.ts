@@ -4,7 +4,12 @@ import prisma from "../../prisma";
 import { STANDARD } from "../helpers/constants";
 import { handleServerError } from "../helpers/errors";
 import { momentClient } from "../helpers/moment";
-import { getPaginationObj } from "../helpers";
+import {
+  getPaginationObj,
+  pictureSave,
+  pictureDelete,
+  fileToBase64,
+} from "../helpers";
 
 import { ProductType, ProductParamsIdType } from "types/products";
 import { PaginationType } from "types/pagination";
@@ -25,15 +30,25 @@ export const getAllProducts = async (
       },
     });
 
+    const productArr = [];
+    for (let index = 0; index < products.length; index++) {
+      const product = products[index];
+      let pictureBase64;
+      if (product?.picture) {
+        const picturePath = productPicturePath(product.picture);
+        pictureBase64 = await fileToBase64(picturePath, product.picture);
+        productArr.push({ ...product, picture: pictureBase64 });
+      }
+    }
+
     const count = await prisma.product.count({ where: { deleted: false } });
 
-    reply
-      .status(STANDARD.SUCCESS)
-      .send({
-        data: products,
-        pagination: getPaginationObj(page, limit, count),
-      });
+    reply.status(STANDARD.SUCCESS).send({
+      data: productArr,
+      pagination: getPaginationObj(page, limit, count),
+    });
   } catch (e) {
+    console.log(e);
     handleServerError(reply, e);
   }
 };
@@ -43,11 +58,14 @@ export const createProducts = async (
   reply: FastifyReply
 ) => {
   try {
-    const { name, picture, category_id } = request.body;
+    const { name, picture, picture_name, category_id } = request.body;
+
+    await pictureSave(picture, picture_name, "product");
+
     const product = await prisma.product.create({
       data: {
         name,
-        picture,
+        picture: picture_name,
         category_id,
       },
     });
@@ -64,7 +82,14 @@ export const updateProducts = async (
 ) => {
   try {
     const id = Number(request.params.id);
-    const { name, picture, category_id } = request.body;
+    const { name, picture, picture_name, category_id } = request.body;
+
+    const oldProduct = await prisma.product.findUnique({ where: { id } });
+
+    if (picture && picture_name && oldProduct) {
+      await pictureDelete(oldProduct.picture, "product");
+      await pictureSave(picture, picture_name, "product");
+    }
 
     const product = await prisma.product.update({
       where: { id },
@@ -92,8 +117,17 @@ export const getProducts = async (
       where: { id },
     });
 
-    reply.status(STANDARD.SUCCESS).send({ data: product });
+    let pictureBase64;
+    if (product?.picture) {
+      const picturePath = productPicturePath(product.picture);
+      pictureBase64 = await fileToBase64(picturePath, product.picture);
+    }
+
+    reply
+      .status(STANDARD.SUCCESS)
+      .send({ data: { ...product, picture: pictureBase64 } });
   } catch (e) {
+    console.log(e);
     handleServerError(reply, e);
   }
 };
@@ -105,6 +139,11 @@ export const deleteProducts = async (
   try {
     const id = Number(request.params.id);
     const deleted_time = momentClient.getDeleteTime(Date.now());
+
+    const oldProduct = await prisma.product.findUnique({ where: { id } });
+    if (oldProduct?.picture) {
+      await pictureDelete(oldProduct.picture, "product");
+    }
 
     const product = await prisma.product.update({
       where: {
@@ -121,3 +160,8 @@ export const deleteProducts = async (
     handleServerError(reply, e);
   }
 };
+
+function productPicturePath(picture: string) {
+  const dir = process.cwd();
+  return `${dir}/src/pictures/product/${picture}`;
+}

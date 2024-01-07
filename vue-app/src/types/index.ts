@@ -37,8 +37,5 @@ export interface paginationType {
 export interface tableType {
   headers: string[]
   items: categoryType[]
-  products: productType[]
-  parent_category: categoryType
-  child_category: categoryType[]
   actions: object[]
 }

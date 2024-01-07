@@ -18,7 +18,7 @@ model Category {
     parent_id       Int?
     parent_category Category?  @relation("ParentRelation", fields: [parent_id], references: [id])
     child_category  Category[] @relation("ParentRelation")
-    products         Product[]
+    products        Product[]
 }
 
 model Product {

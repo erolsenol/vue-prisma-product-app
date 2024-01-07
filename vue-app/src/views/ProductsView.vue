@@ -36,7 +36,9 @@
             </th>
             <th>{{ item.id }}</th>
             <td>{{ item.name }}</td>
-            <td>{{ item.picture }}</td>
+            <td>
+              <img v-if="item.picture" :src="item.picture" class="img-thumbnail">
+            </td>
             <td>{{ item.id }}</td>
             <td>{{ item.category.name }}</td>
           </tr>
@@ -67,7 +69,6 @@ import { Vue } from "vue-class-component"
 import { ref, reactive, onMounted, defineOptions } from "vue";
 import { useI18n } from "vue-i18n"
 import { useStore } from "vuex";
-import qs from "qs"
 
 import Pagination from "@/components/Pagination.vue"
 import ProductForm from "@/components/Product/Form.vue"
@@ -84,24 +85,35 @@ defineOptions({
 const { t } = useI18n()
 const store = useStore()
 
-let pagination: paginationType = ref({})
+let pagination = ref<paginationType>({})
 let formType = ref<(string)>("create")
-let product = ref<(productType)>({})
-let table: tableType = reactive({
+let product = ref<productType>({})
+let table = reactive<tableType>({
   items: [],
   headers: ['actions', 'id', 'name', 'picture', 'category'],
   actions: [{ text: 'update', func: itemAction }, { text: 'delete', func: itemAction }]
 })
 
-let picture = ref(new FormData())
+let picture = ref<Blob | null>();
+let pictureName = ref<string>("");
 
 function fileInput(file: File) {
-  picture.value.append('picture', file)
+  const reader = new FileReader();
+  reader.addEventListener('load', readFile);
+  reader.readAsDataURL(file);
+
+  pictureName.value = file.name
+
+}
+function readFile(event) {
+  picture.value = event.target.result;
 }
 
 async function itemAction() {
   const data = {
     ...product.value,
+    picture: picture.value,
+    picture_name: pictureName.value
   }
 
   if (product.value.category_id && product.value.category_id.includes("-")) {
@@ -169,4 +181,6 @@ async function getItems(page = 1, limit = 20) {
 
 </script>
 
-<style scoped lang="scss"></style>
+<style scoped lang="scss">
+
+</style>

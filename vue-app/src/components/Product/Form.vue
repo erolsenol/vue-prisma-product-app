@@ -4,6 +4,7 @@
             <label for="product-name" class="form-label">{{ $t('name') }}</label>
             <input type="text" :disabled="formDisable" v-model="model.name" class="form-control" id="product-name">
         </div>
+        <img v-if="model.picture" :src="model.picture" class="img-thumbnail">
         <div class="mb-3">
             <label for="product-picture" class="form-label">{{ $t('picture') }}</label>
             <input type="file" :disabled="formDisable" class="form-control" id="product-picture"
@@ -17,7 +18,7 @@
   
 <script setup lang="ts" generic="ProductForm extends Vue">
 import { Vue } from "vue-class-component"
-import { defineModel, defineProps, defineOptions, computed, watch,defineEmits } from "vue";
+import { defineModel, defineProps, defineOptions, computed, watch, defineEmits } from "vue";
 
 import CategorySelect from "@/components/Category/Select.vue"
 import { productType } from "@/types";
@@ -41,9 +42,8 @@ watch(model, async (newModel, oldModel) => {
 }, { deep: true })
 
 function imageInput(e: Event) {
-    if (!e) return
-    const file: File = e.target.files[0]
-    emit('fileInput', file)
+    if (!e?.target?.files[0]) return
+    emit('fileInput', e.target.files[0])
 }
 
 </script>
