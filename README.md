@@ -1,24 +1,19 @@
-# vue-app
+<h3 align="left">This project consists of 3 main containers<br>1 API (Fastify)<br>2 Frontends (Vue)<br>3 Databases (Mysql)</h3>
 
-## Project setup
-```
-npm install
-```
+###
 
-### Compiles and hot-reloads for development
-```
-npm run serve
-```
+<p align="left">Postman address: https://www.postman.com/news-project-team-234039/workspace/vue-prisma-product-app/overview</p>
 
-### Compiles and minifies for production
-```
-npm run build
-```
+###
 
-### Lints and fixes files
-```
-npm run lint
-```
+<p align="left">Docker must be installed on your computer.<br>If it is not installed, you can install it from this address https://docs.docker.com/engine/install/</p>
 
-### Customize configuration
-See [Configuration Reference](https://cli.vuejs.org/config/).
+###
+
+<p align="left">run this command "docker-compose up" in the root folder of the project</p>
+
+###
+
+<p align="left">You can use the application by opening your "http://localhost:8080" address from your browser.</p>
+
+###
