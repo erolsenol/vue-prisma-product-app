@@ -7,7 +7,7 @@
         <img v-if="model.picture" :src="model.picture" class="img-thumbnail">
         <div class="mb-3">
             <label for="product-picture" class="form-label">{{ $t('picture') }}</label>
-            <input type="file" :disabled="formDisable" accept="image/*" ref="productPictureEl" class="form-control" id="product-picture"
+            <input type="file" :disabled="formDisable" accept="image/*" class="form-control" id="product-picture"
                 @input="(e) => imageInput(e)">
         </div>
         <div class="mb-3">
@@ -18,7 +18,7 @@
   
 <script setup lang="ts" generic="ProductForm extends Vue">
 import { Vue } from "vue-class-component"
-import { defineModel, defineProps, defineOptions, computed, watch, defineEmits } from "vue";
+import { defineModel, defineProps, defineOptions, computed, defineEmits } from "vue";
 
 import CategorySelect from "@/components/Category/Select.vue"
 import { productType } from "@/types";

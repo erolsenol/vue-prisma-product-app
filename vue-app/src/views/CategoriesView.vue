@@ -36,7 +36,9 @@
             </th>
             <th>{{ item.id }}</th>
             <td>{{ item.name }}</td>
-            <td>{{ item.picture }}</td>
+            <td>
+              <img v-if="item.picture" :src="item.picture" class="img-thumbnail">
+            </td>
             <td>{{ item.id }}</td>
             <td>{{ item.products.lenght }}</td>
             <td>{{ item.parent_category?.name }}</td>
@@ -50,7 +52,7 @@
     </div>
     <CommonModal :title="`${$t('category')} ${formType}`" :footer="false" :style="{ textAlign: 'left' }">
       <template v-slot:content>
-        <CategoryForm :type="formType" v-model="category" />
+        <CategoryForm :type="formType" v-model="category" @fileInput="fileInput" />
       </template>
       <template v-slot:footer>
         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
@@ -87,7 +89,8 @@ const { t } = useI18n()
 const store = useStore()
 
 
-
+let picture = ref<Blob | null>();
+let pictureName = ref<string>("");
 let pagination: paginationType = ref({})
 let formType = ref<(string)>("create")
 let category = ref<(categoryType)>({
@@ -101,15 +104,27 @@ let table: tableType = reactive({
   actions: [{ text: 'update', func: itemAction }, { text: 'delete', func: itemAction }]
 })
 
+function fileInput(file: File) {
+  const reader = new FileReader();
+  reader.addEventListener('load', readFile);
+  reader.readAsDataURL(file);
 
+  pictureName.value = file.name
+}
+function readFile(event) {
+  picture.value = event.target.result;
+}
 
 async function itemAction() {
   const data = {
     ...category.value,
+    picture: picture.value,
+    picture_name: pictureName.value
   }
 
-  if (category.value.parent_id && category.value.parent_id.includes("-")) {
-    const parenIdArr = category.value.parent_id.split("-")
+  const parentId = category?.value?.parent_id || ""
+  if (typeof parentId !== "number" && parentId.includes("-")) {
+    const parenIdArr = parentId.split("-")
     data.parent_id = Number(parenIdArr[0])
   }
 

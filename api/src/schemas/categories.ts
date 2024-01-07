@@ -5,6 +5,7 @@ export const CategoriesCreateSchema = {
     .additionalProperties(false)
     .prop("name", S.string().required())
     .prop("picture", S.string())
+    .prop("picture_name", S.string())
     .prop("parent_id", S.number().raw({ nullable: true })),
 } as const;
 
@@ -15,6 +16,7 @@ export const CategoriesUpdateSchema = {
     .additionalProperties(false)
     .prop("name", S.string())
     .prop("picture", S.string())
+    .prop("picture_name", S.string())
     .prop("parent_id", S.number().raw({ nullable: true })),
 } as const;
 

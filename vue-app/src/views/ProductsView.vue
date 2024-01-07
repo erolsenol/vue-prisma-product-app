@@ -85,7 +85,6 @@ defineOptions({
 const { t } = useI18n()
 const store = useStore()
 
-const productPictureEl = ref(null)
 let pagination = ref<paginationType>({})
 let formType = ref<(string)>("create")
 let product = ref<productType>({})
@@ -104,7 +103,6 @@ function fileInput(file: File) {
   reader.readAsDataURL(file);
 
   pictureName.value = file.name
-
 }
 function readFile(event) {
   picture.value = event.target.result;
@@ -118,9 +116,9 @@ async function itemAction() {
   }
 
   
-  const categoryId = product?.value?.category_id
+  const categoryId = product?.value?.category_id || ""
   if (typeof categoryId !== "number" && categoryId.includes("-")) {
-    const parenIdArr = product.value.category_id.split("-")
+    const parenIdArr = categoryId.split("-")
     data.category_id = Number(parenIdArr[0])
   }
 

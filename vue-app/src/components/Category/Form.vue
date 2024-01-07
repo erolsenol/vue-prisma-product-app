@@ -4,9 +4,10 @@
             <label for="category-name" class="form-label">{{ $t('name') }}</label>
             <input type="text" :disabled="formDisable" v-model="model.name" class="form-control" id="category-name">
         </div>
+        <img v-if="model.picture" :src="model.picture" class="img-thumbnail">
         <div class="mb-3">
             <label for="category-picture" class="form-label">{{ $t('picture') }}</label>
-            <input type="file" :disabled="formDisable"  accept="image/*" class="form-control" id="category-picture"
+            <input type="file" :disabled="formDisable" accept="image/*" class="form-control" id="category-picture"
                 @input="(e) => imageInput(e)">
         </div>
         <div class="mb-3">
@@ -17,8 +18,7 @@
   
 <script setup lang="ts" generic="CategoryForm extends Vue">
 import { Vue } from "vue-class-component"
-import { reactive, defineModel, defineProps, defineOptions, computed } from "vue";
-import { useI18n } from "vue-i18n"
+import { defineModel, defineProps, defineOptions, computed, defineEmits } from "vue"
 
 import CategorySelect from "./Select.vue"
 import { categoryType } from "@/types";
@@ -27,6 +27,7 @@ defineOptions({
     name: 'CategoryForm',
     components: { CategorySelect },
 })
+const emit = defineEmits(['fileInput'])
 const props = defineProps<{ type: string }>()
 const model: categoryType | any = defineModel({ default: () => ({}) })
 
@@ -35,8 +36,8 @@ const formDisable = computed(() => {
 })
 
 function imageInput(e: Event) {
-    if (!e) return
-    const file: File = e.target.files[0]
+    if (!e?.target?.files[0]) return
+    emit('fileInput', e.target.files[0])
 }
 
 </script>

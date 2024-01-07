@@ -4,7 +4,12 @@ import prisma from "../../prisma";
 import { STANDARD } from "../helpers/constants";
 import { handleServerError } from "../helpers/errors";
 import { momentClient } from "../helpers/moment";
-import { getPaginationObj } from "../helpers";
+import {
+  getPaginationObj,
+  pictureSave,
+  pictureDelete,
+  fileToBase64,
+} from "../helpers";
 
 import { CategoryType, CategoryParamsIdType } from "types/categories";
 import { PaginationType } from "types/pagination";
@@ -31,10 +36,21 @@ export const getAllCategories = async (
       },
     });
 
+    const categoryArr = [];
+    for (let index = 0; index < categories.length; index++) {
+      const category = categories[index];
+      let pictureBase64;
+      if (category?.picture) {
+        const picturePath = categoryPicturePath(category.picture);
+        pictureBase64 = await fileToBase64(picturePath, category.picture);
+        categoryArr.push({ ...category, picture: pictureBase64 });
+      }
+    }
+
     const count = await prisma.category.count({ where: { deleted: false } });
 
     reply.status(STANDARD.SUCCESS).send({
-      data: categories,
+      data: categoryArr,
       pagination: getPaginationObj(page, limit, count),
     });
   } catch (e) {
@@ -47,11 +63,14 @@ export const createCategories = async (
   reply: FastifyReply
 ) => {
   try {
-    const { name, picture, parent_id } = request.body;
+    const { name, picture, picture_name, parent_id } = request.body;
+
+    await pictureSave(picture, picture_name, "category");
+
     const category = await prisma.category.create({
       data: {
         name,
-        picture,
+        picture: picture_name,
         parent_id,
       },
     });
@@ -68,13 +87,19 @@ export const updateCategories = async (
 ) => {
   try {
     const id = Number(request.params.id);
-    const { name, picture, parent_id } = request.body;
+    const { name, picture, picture_name, parent_id } = request.body;
+
+    const oldCategory = await prisma.category.findUnique({ where: { id } });
+    if (picture && picture_name && oldCategory) {
+      await pictureDelete(oldCategory.picture, "category");
+      await pictureSave(picture, picture_name, "category");
+    }
 
     const category = await prisma.category.update({
       where: { id },
       data: {
         name,
-        picture,
+        picture: picture_name,
         parent_id,
       },
     });
@@ -96,7 +121,15 @@ export const getCategories = async (
       where: { id },
     });
 
-    reply.status(STANDARD.SUCCESS).send({ data: category });
+    let pictureBase64;
+    if (category?.picture) {
+      const picturePath = categoryPicturePath(category.picture);
+      pictureBase64 = await fileToBase64(picturePath, category.picture);
+    }
+
+    reply
+      .status(STANDARD.SUCCESS)
+      .send({ data: { ...category, picture: pictureBase64 } });
   } catch (e) {
     handleServerError(reply, e);
   }
@@ -109,6 +142,11 @@ export const deleteCategories = async (
   try {
     const id = Number(request.params.id);
     const deleted_time = momentClient.getDeleteTime(Date.now());
+
+    const oldCategory = await prisma.category.findUnique({ where: { id } });
+    if (oldCategory?.picture) {
+      await pictureDelete(oldCategory.picture, "category");
+    }
 
     const category = await prisma.category.update({
       where: {
@@ -125,3 +163,8 @@ export const deleteCategories = async (
     handleServerError(reply, e);
   }
 };
+
+function categoryPicturePath(picture: string) {
+  const dir = process.cwd();
+  return `${dir}/src/pictures/category/${picture}`;
+}

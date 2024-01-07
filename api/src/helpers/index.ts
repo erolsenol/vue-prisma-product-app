@@ -16,6 +16,7 @@ export async function pictureSave(
 ): Promise<boolean> {
   return new Promise<boolean>((resolve, reject) => {
     try {
+      if(!file || !name) return resolve(false)
       const path = `${process.cwd()}/src/pictures/${owner}/`;
 
       const pathArr = path.split("/");

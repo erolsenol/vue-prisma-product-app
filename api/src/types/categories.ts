@@ -3,6 +3,7 @@ import { Static, Type } from "@sinclair/typebox";
 export const Category = Type.Object({
   name: Type.String(),
   picture: Type.String(),
+  picture_name: Type.String(),
   parent_id: Type.Number(),
 });
 
