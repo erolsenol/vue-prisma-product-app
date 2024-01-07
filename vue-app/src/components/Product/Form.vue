@@ -35,12 +35,6 @@ const formDisable = computed(() => {
     return props.type === "delete"
 })
 
-watch(model, async (newModel, oldModel) => {
-    console.log("newModel", newModel);
-    console.log("oldModel", oldModel);
-
-}, { deep: true })
-
 function imageInput(e: Event) {
     if (!e?.target?.files[0]) return
     emit('fileInput', e.target.files[0])

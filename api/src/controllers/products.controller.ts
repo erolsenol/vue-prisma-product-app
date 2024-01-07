@@ -48,7 +48,6 @@ export const getAllProducts = async (
       pagination: getPaginationObj(page, limit, count),
     });
   } catch (e) {
-    console.log(e);
     handleServerError(reply, e);
   }
 };
@@ -127,7 +126,6 @@ export const getProducts = async (
       .status(STANDARD.SUCCESS)
       .send({ data: { ...product, picture: pictureBase64 } });
   } catch (e) {
-    console.log(e);
     handleServerError(reply, e);
   }
 };

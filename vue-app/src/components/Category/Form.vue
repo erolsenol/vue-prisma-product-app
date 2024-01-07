@@ -37,7 +37,6 @@ const formDisable = computed(() => {
 function imageInput(e: Event) {
     if (!e) return
     const file: File = e.target.files[0]
-    console.log("file", file);
 }
 
 </script>

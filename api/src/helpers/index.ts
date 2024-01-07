@@ -29,14 +29,12 @@ export async function pictureSave(
           fs.mkdirSync(strPath);
         }
       }
-      console.log("file", file.substring(0, 30));
 
       const base64Data = file.replace(/^data:image\/\w+;base64,/, "");
 
       const writePath = `${path}${name}`;
       fs.writeFile(writePath, base64Data, "base64", function (err) {
         if (err) {
-          console.log(err);
           return resolve(false);
         }
         return resolve(true);

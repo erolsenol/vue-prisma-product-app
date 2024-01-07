@@ -138,7 +138,6 @@ async function itemAction() {
     if (error?.response?.data?.message) {
       store.commit('addToast', { title: t('error'), text: error.response.data.message })
     }
-    console.log("error", error);
   }
 }
 
