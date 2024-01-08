@@ -18,6 +18,6 @@
 
 ###
 
-<p align="left">You can use the application by opening your "http://192.168.64.2:8080" address from your browser.</p>
+<p align="left">You can use the application by opening your "http://localhost:8080" address from your browser.</p>
 
 ###
