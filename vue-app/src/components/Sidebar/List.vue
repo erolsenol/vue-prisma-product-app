@@ -1,5 +1,5 @@
 <template>
-    <SidebarItem @click="listState = !listState" :listState="listState" :text="props.item.name" :icon="props.item.icon" :size="26"
+    <SidebarItem @click="stateChange" :listState="listState" :hasChild="props.item.child_category?.length > 0" :text="props.item.name" :icon="props.item.icon" :size="26"
         :router="props.item.router" />
     <div class="nav-category ms-2" :class="listState ? 'category-open' : ''">
         <template v-for="(child, index) in props.item.child_category" :key="index">
@@ -24,6 +24,12 @@ interface Props {
 
 const props = defineProps<Props>()
 let listState = ref(false)
+
+function stateChange(){
+    if(props.item.child_category?.length > 0) {
+        listState.value = !listState.value
+    }
+}
 
 </script>
   

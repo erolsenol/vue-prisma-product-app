@@ -5,7 +5,7 @@
             <i class="header-item-icon w-50" :class="props.icon || 'ri-home-2-line'" :style="style">
             </i>
             <span class="w-50">{{ $t(props.text) }}</span>
-            <i :class="listState ? 'ri-arrow-down-s-line' : 'ri-arrow-up-s-line'"></i>
+            <i v-if="hasChild" :class="listState ? 'ri-arrow-down-s-line' : 'ri-arrow-up-s-line'"></i>
         </router-link>
     </li>
 </template>
@@ -24,6 +24,7 @@ export interface Props {
     size: number
     router: string
     listState: boolean
+    hasChild: boolean
 }
 
 const props = defineProps<Props>()
