@@ -2,9 +2,10 @@
     <li class="nav-item">
         <router-link class="nav-link link-body-emphasis d-flex flex-row align-items-center justify-content-around py-0 mb-1"
             :to="{ name: props.router }">
-            <i class="header-item-icon w-50" :class="props.icon" :style="style">
+            <i class="header-item-icon w-50" :class="props.icon || 'ri-home-2-line'" :style="style">
             </i>
             <span class="w-50">{{ $t(props.text) }}</span>
+            <i :class="listState ? 'ri-arrow-down-s-line' : 'ri-arrow-up-s-line'"></i>
         </router-link>
     </li>
 </template>
@@ -14,7 +15,7 @@ import { defineProps, defineOptions, reactive } from "vue"
 import 'vue-i18n'
 
 defineOptions({
-    name: 'HeaderItem',
+    name: 'SideBarItem',
 })
 
 export interface Props {
@@ -22,6 +23,7 @@ export interface Props {
     icon: string
     size: number
     router: string
+    listState: boolean
 }
 
 const props = defineProps<Props>()

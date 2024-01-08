@@ -34,7 +34,7 @@ import { defineModel, defineOptions, computed, defineEmits, ref } from "vue"
 import { paginationType } from "@/types";
 
 defineOptions({
-    name: 'Paginations',
+    name: 'Pagination',
 })
 const emit = defineEmits(['selectPage'])
 const model = defineModel<paginationType>({})

@@ -11,14 +11,14 @@
                 @input="(e) => imageInput(e)">
         </div>
         <div class="mb-3">
-            <CategorySelect :disabled="formDisable" v-model="model.parent_id" />
+            <CategorySelect :title="`${$t('parent')} ${$t('category')}`" :disabled="formDisable" v-model="model.parent_id" />
         </div>
     </div>
 </template>
   
 <script setup lang="ts" generic="CategoryForm extends Vue">
 import { Vue } from "vue-class-component"
-import { defineModel, defineProps, defineOptions, computed, defineEmits } from "vue"
+import { defineModel, defineProps, defineOptions, computed, defineEmits,watch } from "vue"
 
 import CategorySelect from "./Select.vue"
 import { categoryType } from "@/types";
@@ -33,6 +33,12 @@ const model: categoryType | any = defineModel({ default: () => ({}) })
 
 const formDisable = computed(() => {
     return props.type === "delete"
+})
+
+watch(props.type, async (newType) => {
+    if (!newType) {
+        model.value.parent_id = null
+    }
 })
 
 function imageInput(e: Event) {

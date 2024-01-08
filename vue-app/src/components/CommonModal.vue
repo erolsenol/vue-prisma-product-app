@@ -30,7 +30,7 @@ import { defineProps, defineOptions } from "vue";
 import { useI18n } from "vue-i18n"
 
 defineOptions({
-    name: 'CategoryForm',
+    name: 'CommonModal',
     components: {},
 })
 

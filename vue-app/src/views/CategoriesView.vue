@@ -147,6 +147,7 @@ async function itemAction() {
     if (response?.status === 200 || response?.status === 201) {
       await getItems()
       document.querySelector("#common-modal-close").click()
+      formType.value = ""
     }
   } catch (error) {
     if (error?.response?.data?.message) {
@@ -156,9 +157,7 @@ async function itemAction() {
 }
 
 async function showModal(type: string, id: number) {
-  if (type == "create") {
     category.value = {}
-  }
   if (id > -1) {
     await getItem(id)
   }

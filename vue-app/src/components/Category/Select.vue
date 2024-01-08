@@ -1,6 +1,6 @@
 <template>
     <div class="category-select">
-        <label for="exampleDataList" class="form-label">{{ $t('category') }}</label>
+        <label for="exampleDataList" class="form-label">{{ props.title || $t('category') }}</label>
         <input v-model="model" :disabled="props.disabled" class="form-control" list="datalistOptions" id="exampleDataList"
             :placeholder="`${$t('category')} ${$t('select')}`">
         <datalist id="datalistOptions">
@@ -11,7 +11,7 @@
   
 <script setup lang="ts" generic="CategorySelect extends Vue">
 import { Vue } from "vue-class-component"
-import { ref, onMounted, defineOptions, defineModel, defineProps } from "vue";
+import { ref, onMounted, defineOptions, defineModel, defineProps, watch } from "vue";
 
 import api from "@/service";
 import { categoryType } from "@/types"
@@ -21,19 +21,28 @@ defineOptions({
     components: {},
 })
 
-const props = defineProps<{ disabled: boolean }>()
+const props = defineProps<{ disabled: boolean, title?: string }>()
 
 const model = defineModel()
 
-
 let items = ref<categoryType[]>([])
 
+watch(model, async (newModel) => {
+    if (newModel) {
+        getItems()
+    }
+})
+
 onMounted(async () => {
+    getItems()
+})
+
+async function getItems() {
     const response = await api.get("/api/categories?all=1")
     if (response.status === 200) {
         items.value = response.data.data
     }
-})
+}
 
 </script>
   
