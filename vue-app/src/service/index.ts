@@ -1,8 +1,7 @@
 import axios, { AxiosRequestConfig } from "axios"
 
-console.log("process.env.BASEURL",process.env.BASEURL);
 const config: AxiosRequestConfig = {
-  baseURL: process.env.BASEURL || "http://localhost:5001",
+  baseURL: process.env.VUE_APP_BASEURL || "http://localhost:5001",
   headers: {
     Accept: "application/json",
     "Content-Type": "application/json",
