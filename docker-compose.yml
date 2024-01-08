@@ -5,29 +5,53 @@ services:
     container_name: fastify-db
     command: --default-authentication-plugin=mysql_native_password
     restart: always
+    networks:
+      app_network:
+        ipv4_address: 10.5.0.2
     environment:
       MYSQL_DATABASE: 'db'
       MYSQL_ROOT_PASSWORD: 'password'
       MYSQL_ALLOW_EMPTY_PASSWORD: 0
+    expose:
+      - "3306"
     ports:
       - 3306:3306
+    healthcheck:
+      test: [ "CMD", "mysqladmin", "ping", "-h", "localhost" ]
+      timeout: 10s
+      interval: 5s
+      retries: 10
 
   backend:
     build: ./api
     container_name: fastify-api
+    networks:
+      app_network:
+        ipv4_address: 10.5.0.3
     depends_on:
       "db":
         condition: service_healthy
-      "frontend":
-        condition: service_healthy
+    expose:
+      - "5001"
     ports:
       - 5001:5001
 
   frontend:
     build: ./vue-app
     container_name: vue-app
-    depends_on:
-      "db":
-        condition: service_healthy
+    networks:
+      app_network:
+        ipv4_address: 10.5.0.4
+    expose:
+      - "8080"
     ports:
       - 8080:8080
+
+networks:
+  app_network:
+    driver: bridge
+    ipam:
+      driver: default
+      config:
+        - subnet: 10.5.0.0/24
+          gateway: 10.5.0.1
