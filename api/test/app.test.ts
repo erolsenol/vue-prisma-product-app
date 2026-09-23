@@ -38,4 +38,49 @@ describe("API application", () => {
 
     await app.close();
   });
+
+  it("rejects empty product names before reaching the database", async () => {
+    const app = await buildApp({ logger: false });
+
+    const response = await app.inject({
+      method: "POST",
+      url: "/api/products",
+      payload: { name: "", category_id: 1 },
+    });
+
+    expect(response.statusCode).toBe(400);
+    expect(response.json().message).toBe("Request validation failed");
+
+    await app.close();
+  });
+
+  it("rejects non-positive foreign keys before reaching the database", async () => {
+    const app = await buildApp({ logger: false });
+
+    const response = await app.inject({
+      method: "POST",
+      url: "/api/products",
+      payload: { name: "Keyboard", category_id: 0 },
+    });
+
+    expect(response.statusCode).toBe(400);
+    expect(response.json().message).toBe("Request validation failed");
+
+    await app.close();
+  });
+
+  it("rejects unsafe picture names before reaching the database", async () => {
+    const app = await buildApp({ logger: false });
+
+    const response = await app.inject({
+      method: "POST",
+      url: "/api/products",
+      payload: { name: "Keyboard", category_id: 1, picture_name: "../secret.txt" },
+    });
+
+    expect(response.statusCode).toBe(400);
+    expect(response.json().message).toBe("Request validation failed");
+
+    await app.close();
+  });
 });
