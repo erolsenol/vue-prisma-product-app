@@ -4,6 +4,7 @@ import {
   CategoriesUpdateSchema,
   CategoriesGetSchema
 } from "../schemas/categories";
+import { PaginationSchema } from "../schemas/pagination";
 import {
   createCategories,
   updateCategories,
@@ -16,6 +17,7 @@ async function categoriesRouter(fastify: FastifyInstance) {
   fastify.route({
     method: "GET",
     url: "/",
+    schema: { querystring: PaginationSchema },
     handler: getAllCategories,
   });
   fastify.route({

@@ -14,6 +14,18 @@ export interface AppOptions {
 export async function buildApp(options: AppOptions = {}): Promise<FastifyInstance> {
   const app = Fastify({ logger: options.logger ?? true });
 
+  app.setErrorHandler((error, _request, reply) => {
+    if (error.validation) {
+      return reply.code(400).send({
+        message: "Request validation failed",
+        details: error.validation,
+      });
+    }
+
+    app.log.error(error);
+    return reply.code(500).send({ message: "Internal server error" });
+  });
+
   await app.register(cors, {
     origin: options.corsOrigin ?? process.env.API_CORS_ORIGIN ?? true,
   });

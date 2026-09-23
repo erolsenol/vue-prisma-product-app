@@ -1,5 +1,6 @@
 import { FastifyInstance } from "fastify";
 import { ProductCreateSchema, ProductUpdateSchema,ProductGetSchema } from "../schemas/products";
+import { PaginationSchema } from "../schemas/pagination";
 import {
   createProducts,
   updateProducts,
@@ -12,6 +13,7 @@ async function productsRouter(fastify: FastifyInstance) {
   fastify.route({
     method: "GET",
     url: "/",
+    schema: { querystring: PaginationSchema },
     handler: getAllProducts,
   });
   fastify.route({
