@@ -30,16 +30,13 @@ export const getAllProducts = async (
       },
     });
 
-    const productArr = [];
-    for (let index = 0; index < products.length; index++) {
-      const product = products[index];
-      let pictureBase64;
-      if (product?.picture) {
-        const picturePath = productPicturePath(product.picture);
-        pictureBase64 = await fileToBase64(picturePath, product.picture);
-      }
-      productArr.push({ ...product, picture: pictureBase64 });
-    }
+    const productArr = await Promise.all(products.map(async (product) => {
+      const pictureBase64 = product.picture
+        ? await fileToBase64(productPicturePath(product.picture), product.picture)
+        : undefined;
+
+      return { ...product, picture: pictureBase64 };
+    }));
 
     const count = await prisma.product.count({
       where: { deleted: false, category: { deleted: false } },

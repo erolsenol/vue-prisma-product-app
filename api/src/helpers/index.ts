@@ -2,11 +2,13 @@ import fs from "fs";
 import path from "path";
 
 export function getPaginationObj(page: number, limit: number, count: number) {
+  const normalizedLimit = Math.max(1, Number(limit));
+
   return {
     page: Number(page),
-    limit: Number(limit),
+    limit: normalizedLimit,
     count,
-    totalPage: Math.ceil(count / limit),
+    totalPage: Math.ceil(count / normalizedLimit),
   };
 }
 
@@ -67,17 +69,26 @@ function isSafePictureName(name: string): boolean {
 }
 
 export async function fileToBase64(
-  path: string,
+  filePath: string,
   name: string
 ): Promise<string> {
-  return new Promise<string>((resolve, reject) => {
-    try {
-      const contents = fs.readFileSync(path, { encoding: "base64" });
-      const dotIndex = name.indexOf(".");
-      
-      return resolve(`data:image/jpeg;base64,${contents}`);
-    } catch (error) {
-      return resolve("");
-    }
-  });
+  try {
+    const contents = await fs.promises.readFile(filePath, { encoding: "base64" });
+    return `data:${pictureMimeType(name)};base64,${contents}`;
+  } catch {
+    return "";
+  }
+}
+
+function pictureMimeType(name: string): string {
+  const extension = path.extname(name).toLowerCase();
+  const mimeTypes: Record<string, string> = {
+    ".gif": "image/gif",
+    ".jpeg": "image/jpeg",
+    ".jpg": "image/jpeg",
+    ".png": "image/png",
+    ".webp": "image/webp",
+  };
+
+  return mimeTypes[extension] ?? "application/octet-stream";
 }
