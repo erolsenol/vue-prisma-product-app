@@ -19,15 +19,12 @@ export const getAllCategories = async (
   reply: FastifyReply
 ) => {
   try {
-    let { page = 1, limit = 20, all = 0 } = request.query;
-
-    if (all == 1) {
-      limit = limit * 1000;
-    }
+    const { page = 1, limit = 20, all = 0 } = request.query;
+    const isAll = all === 1;
 
     const categories = await prisma.category.findMany({
-      skip: (page - 1) * limit,
-      take: Number(limit),
+      skip: isAll ? undefined : (page - 1) * limit,
+      take: isAll ? undefined : Number(limit),
       where: { deleted: false },
       include: {
         parent_category: { where: { deleted: false } },
@@ -36,22 +33,20 @@ export const getAllCategories = async (
       },
     });
 
-    const categoryArr = [];
-    for (let index = 0; index < categories.length; index++) {
-      const category = categories[index];
-      let pictureBase64;
-      if (category?.picture) {
-        const picturePath = categoryPicturePath(category.picture);
-        pictureBase64 = await fileToBase64(picturePath, category.picture);
-      }
-      categoryArr.push({ ...category, picture: pictureBase64 });
-    }
+    const categoryArr = await Promise.all(categories.map(async (category) => {
+      const pictureBase64 = category.picture
+        ? await fileToBase64(categoryPicturePath(category.picture), category.picture)
+        : undefined;
+
+      return { ...category, picture: pictureBase64 };
+    }));
 
     const count = await prisma.category.count({ where: { deleted: false } });
+    const responseLimit = isAll ? Math.max(1, count) : limit;
 
     reply.status(STANDARD.SUCCESS).send({
       data: categoryArr,
-      pagination: getPaginationObj(page, limit, count),
+      pagination: getPaginationObj(page, responseLimit, count),
     });
   } catch (e) {
     handleServerError(reply, e);

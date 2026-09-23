@@ -83,4 +83,19 @@ describe("API application", () => {
 
     await app.close();
   });
+
+  it("rejects fractional category IDs before reaching the database", async () => {
+    const app = await buildApp({ logger: false });
+
+    const response = await app.inject({
+      method: "POST",
+      url: "/api/products",
+      payload: { name: "Keyboard", category_id: 1.5 },
+    });
+
+    expect(response.statusCode).toBe(400);
+    expect(response.json().message).toBe("Request validation failed");
+
+    await app.close();
+  });
 });
