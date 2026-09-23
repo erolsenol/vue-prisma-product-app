@@ -11,9 +11,6 @@ permissions:
 jobs:
   api:
     runs-on: ubuntu-latest
-    defaults:
-      run:
-        working-directory: api
     steps:
       - uses: actions/checkout@v4
       - uses: pnpm/action-setup@v4
@@ -30,9 +27,6 @@ jobs:
 
   frontend:
     runs-on: ubuntu-latest
-    defaults:
-      run:
-        working-directory: vue-app
     steps:
       - uses: actions/checkout@v4
       - uses: pnpm/action-setup@v4
