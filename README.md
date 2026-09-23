@@ -1,19 +1,62 @@
-<h3 align="left">This project consists of 3 main containers<br>1 API (Fastify)<br>2 Frontends (Vue)<br>3 Databases (Mysql)</h3>
+# Vue Prisma Product App
 
-###
+Typed full-stack product and category management application built with Vue 3, Fastify, Prisma and MySQL.
 
-<p align="left">Postman address: https://www.postman.com/news-project-team-234039/workspace/vue-prisma-product-app/overview</p>
+## Architecture
 
-###
+- `api/`: Fastify HTTP API, Prisma data access and image handling
+- `vue-app/`: Vue 3 frontend with Vue Router, Vuex and i18n
+- `docker-compose.yml`: local MySQL, API and frontend services
+- `api/test/`: API integration tests using Fastify injection
 
-<p align="left">Docker must be installed on your computer.<br>If it is not installed, you can install it from this address https://docs.docker.com/engine/install/</p>
+The repository is managed as a workspace. Node.js 22 is the supported runtime.
 
-###
+## Run locally
 
-<p align="left">Run this command "docker-compose up" in the root folder of the project</p>
+```bash
+cp .env.example .env
+pnpm install
+pnpm dev
+```
 
-###
+Or run the complete containerized stack:
 
-<p align="left">You can use the application by opening your "http://localhost:8080" address from your browser.</p>
+```bash
+docker compose up --build
+```
 
-###
+The frontend is available at `http://localhost:8080` and the API at `http://localhost:5001`.
+
+## Quality checks
+
+```bash
+pnpm typecheck
+pnpm test
+pnpm lint
+pnpm build
+```
+
+The API and frontend both pass strict TypeScript checks. The frontend SFC check is available as `pnpm --dir vue-app typecheck:strict`.
+
+## API health endpoints
+
+- `GET /health/live`: process liveness
+- `GET /health/ready`: database readiness
+- `GET /ping`: backwards-compatible smoke endpoint
+
+## Database
+
+```bash
+pnpm db:generate
+pnpm db:migrate
+```
+
+Database credentials are supplied through `DATABASE_URL`; do not commit `.env` files or production secrets.
+
+## Roadmap
+
+1. Replace Vue CLI with Vite/Nuxt 4 and Vuex with Pinia/TanStack Query.
+2. Introduce shared API contracts and generated client types.
+3. Migrate the database layer to the selected production database strategy.
+4. Add product/category E2E tests, authentication and authorization.
+5. Harden image storage, observability, container images and production deployment.

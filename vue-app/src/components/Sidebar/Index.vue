@@ -7,11 +7,11 @@
         <hr>
         <ul class="nav nav-pills flex-column mb-auto">
             <template v-for="(item, index) in items" :key="index">
-                <template v-if="item?.child_category?.length > 0 && !item.parent_id">
+                <template v-if="item.child_category && item.child_category.length > 0 && !item.parent_id">
                     <SidebarList :item="item" />
                 </template>
                 <template v-else>
-                    <SidebarItem :text="item.name" :icon="item.icon" :size="26" :router="item.router" />
+                    <SidebarItem :text="item.name" :icon="item.icon ?? 'ri-file-list-3-line'" :size="26" :router="item.router ?? 'categories'" />
                 </template>
             </template>
         </ul>
@@ -25,6 +25,15 @@ import { useStore } from "vuex"
 import AppIcon from "../Icons/AppIcon.vue"
 import SidebarItem from "./Item.vue"
 import SidebarList from "./List.vue"
+interface SidebarEntry {
+    name: string
+    icon?: string
+    router?: string
+    id?: number
+    picture?: string
+    parent_id?: number | string
+    child_category?: SidebarEntry[]
+}
 
 defineOptions({
     name: 'SideBar',
@@ -32,7 +41,7 @@ defineOptions({
 })
 const store = useStore()
 
-const sidebarData = ref([
+const sidebarData = ref<SidebarEntry[]>([
     {
         name: "home",
         icon: "ri-home-2-line",
@@ -51,11 +60,8 @@ const items = computed(() => {
         name: "categories",
         icon: "ri-file-list-3-line",
         router: "categories",
-        child_category: store.getters['getCategories'].map(i =>{
-            const data = i
-            delete data.picture
-            return data
-        })
+        parent_id: undefined,
+        child_category: store.getters['getCategories'].map((item: SidebarEntry) => ({ ...item }))
     },]
 })
 

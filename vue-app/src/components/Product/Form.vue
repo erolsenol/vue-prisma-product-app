@@ -16,8 +16,7 @@
     </div>
 </template>
   
-<script setup lang="ts" generic="ProductForm extends Vue">
-import { Vue } from "vue-class-component"
+<script setup lang="ts">
 import { defineModel, defineProps, defineOptions, computed, defineEmits } from "vue";
 
 import CategorySelect from "@/components/Category/Select.vue"
@@ -29,15 +28,17 @@ defineOptions({
 })
 const emit = defineEmits(['fileInput'])
 const props = defineProps<{ type: string }>()
-const model = defineModel<productType>({ default: () => ({}) })
+const model = defineModel<Partial<productType>>({ default: () => ({}) })
 
 const formDisable = computed(() => {
     return props.type === "delete"
 })
 
 function imageInput(e: Event) {
-    if (!e?.target?.files[0]) return
-    emit('fileInput', e.target.files[0])
+    const input = e.target as HTMLInputElement | null
+    const file = input?.files?.[0]
+    if (!file) return
+    emit('fileInput', file)
 }
 
 </script>

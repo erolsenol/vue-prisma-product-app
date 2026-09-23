@@ -9,8 +9,7 @@
     </div>
 </template>
   
-<script setup lang="ts" generic="CategorySelect extends Vue">
-import { Vue } from "vue-class-component"
+<script setup lang="ts">
 import { ref, onMounted, defineOptions, defineModel, defineProps, watch } from "vue";
 
 import api from "@/service";
@@ -23,7 +22,7 @@ defineOptions({
 
 const props = defineProps<{ disabled: boolean, title?: string }>()
 
-const model = defineModel()
+const model = defineModel<string | number | undefined>()
 
 let items = ref<categoryType[]>([])
 

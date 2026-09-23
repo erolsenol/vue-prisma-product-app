@@ -34,8 +34,8 @@ export interface paginationType {
   totalPage: number
 }
 
-export interface tableType {
+export interface tableType<TItem = categoryType> {
   headers: string[]
-  items: categoryType[]
+  items: TItem[]
   actions: object[]
 }

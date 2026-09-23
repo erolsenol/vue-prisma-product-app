@@ -37,8 +37,8 @@ export const getAllProducts = async (
       if (product?.picture) {
         const picturePath = productPicturePath(product.picture);
         pictureBase64 = await fileToBase64(picturePath, product.picture);
-        productArr.push({ ...product, picture: pictureBase64 });
       }
+      productArr.push({ ...product, picture: pictureBase64 });
     }
 
     const count = await prisma.product.count({ where: { deleted: false } });

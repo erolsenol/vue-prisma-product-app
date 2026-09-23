@@ -16,9 +16,8 @@
     </div>
 </template>
   
-<script setup lang="ts" generic="CategoryForm extends Vue">
-import { Vue } from "vue-class-component"
-import { defineModel, defineProps, defineOptions, computed, defineEmits,watch } from "vue"
+<script setup lang="ts">
+import { defineModel, defineProps, defineOptions, computed, defineEmits, watch } from "vue"
 
 import CategorySelect from "./Select.vue"
 import { categoryType } from "@/types";
@@ -29,21 +28,23 @@ defineOptions({
 })
 const emit = defineEmits(['fileInput'])
 const props = defineProps<{ type: string }>()
-const model: categoryType | any = defineModel({ default: () => ({}) })
+const model = defineModel<Partial<categoryType>>({ default: () => ({}) })
 
 const formDisable = computed(() => {
     return props.type === "delete"
 })
 
-watch(props.type, async (newType) => {
-    if (!newType) {
-        model.value.parent_id = null
+watch(() => props.type, (newType) => {
+    if (!newType && model.value) {
+        model.value.parent_id = undefined
     }
 })
 
 function imageInput(e: Event) {
-    if (!e?.target?.files[0]) return
-    emit('fileInput', e.target.files[0])
+    const input = e.target as HTMLInputElement | null
+    const file = input?.files?.[0]
+    if (!file) return
+    emit('fileInput', file)
 }
 
 </script>

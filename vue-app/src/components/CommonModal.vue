@@ -23,19 +23,15 @@
         </div>
     </div>
 </template>
-  
-<script setup lang="ts" generic="CommonModal extends Vue">
-import { Vue } from "vue-class-component"
+
+<script setup lang="ts">
 import { defineProps, defineOptions } from "vue";
-import { useI18n } from "vue-i18n"
 
 defineOptions({
     name: 'CommonModal',
     components: {},
 })
 
-
-const { t } = useI18n()
 
 interface Props {
     title?: string

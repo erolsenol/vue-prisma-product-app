@@ -4,7 +4,7 @@
             <ul class="pagination d-flex flex-row justify-content-end mb-0">
 
                 <li class="page-item" @click="selectPage(item, newLimit)" v-for="(item, index) in items " :key="index"
-                    v-show="model?.totalPage >= item">
+                    v-show="model.totalPage >= item">
                     <a class="page-link" :class="{
                         'active': model.page == item,
                     }">
@@ -37,7 +37,7 @@ defineOptions({
     name: 'Pagination',
 })
 const emit = defineEmits(['selectPage'])
-const model = defineModel<paginationType>({})
+const model = defineModel<paginationType>({ required: true })
 
 const items = computed(() => {
     const numbers = []
@@ -47,7 +47,7 @@ const items = computed(() => {
         for (let index = 1; index <= model.value.page; index++) {
             numbers.push(index)
         }
-        if (model.value.page < model.value?.totalPage) {
+        if (model.value.page < model.value.totalPage) {
             numbers.push(model.value.page + 1)
         }
     }
@@ -59,7 +59,7 @@ let newPage = ref(1)
 let newLimit = ref(20)
 
 function selectPage(page = 1, limit = 20) {
-    if ((model.value?.page == page || page < 1 || model.value?.totalPage < page) && model.value?.limit == limit) {
+    if ((model.value.page == page || page < 1 || model.value.totalPage < page) && model.value.limit == limit) {
         return
     }
     newPage.value = page

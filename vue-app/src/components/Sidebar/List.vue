@@ -1,6 +1,13 @@
 <template>
-    <SidebarItem @click="stateChange" :listState="listState" :hasChild="props.item.child_category?.length > 0" :text="props.item.name" :icon="props.item.icon" :size="26"
-        :router="props.item.router" />
+    <SidebarItem
+        @click="stateChange"
+        :listState="listState"
+        :hasChild="hasChildren"
+        :text="props.item.name"
+        :icon="props.item.icon ?? 'ri-file-list-3-line'"
+        :size="26"
+        :router="props.item.router ?? 'categories'"
+    />
     <div class="nav-category ms-2" :class="listState ? 'category-open' : ''">
         <template v-for="(child, index) in props.item.child_category" :key="index">
             <SidebarList :item="child" />
@@ -9,30 +16,31 @@
 </template>
 
 <script setup lang="ts">
-import { defineOptions, defineProps, ref } from "vue"
+import { computed, defineOptions, defineProps, ref } from "vue"
 import SidebarItem from "./Item.vue"
-import SidebarList from "./List.vue"
 
 defineOptions({
     name: 'SideBarList',
-    components: { SidebarItem,SidebarList },
+    components: { SidebarItem },
 })
 
-interface Props {
-    item: object
+interface SidebarEntry {
+    name: string
+    icon?: string
+    router?: string
+    child_category?: SidebarEntry[]
 }
+
+interface Props { item: SidebarEntry }
 
 const props = defineProps<Props>()
-let listState = ref(false)
+const listState = ref(false)
+const hasChildren = computed(() => (props.item.child_category?.length ?? 0) > 0)
 
-function stateChange(){
-    if(props.item.child_category?.length > 0) {
-        listState.value = !listState.value
-    }
+function stateChange(): void {
+    if (hasChildren.value) listState.value = !listState.value
 }
-
 </script>
-  
 
 <style scoped lang="scss">
 .sidebar {
@@ -48,18 +56,4 @@ function stateChange(){
 .category-open {
     display: block !important
 }
-
-
-
-@keyframes sideAnimation {
-    from {
-        height: 0px;
-    }
-
-    to {
-        height: 100px;
-        /* your line height here */
-    }
-}
 </style>
-
