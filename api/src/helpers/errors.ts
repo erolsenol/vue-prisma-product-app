@@ -9,12 +9,16 @@ export const ERRORS = {
   tokenError: new Error('Invalid Token'),
 }
 
-export function handleServerError(reply: FastifyReply, error: any) {
+export function handleServerError(reply: FastifyReply, error: unknown) {
   const err = {...ERROR500}
 
-  if(error?.meta?.cause) {
+  if (isPrismaError(error) && error.meta?.cause) {
     err.cause = error.meta.cause
   }
 
   return reply.status(ERROR500.statusCode).send(err);
+}
+
+function isPrismaError(error: unknown): error is { meta?: { cause?: string } } {
+  return typeof error === "object" && error !== null && "meta" in error;
 }

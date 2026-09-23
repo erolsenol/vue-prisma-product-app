@@ -1,0 +1,17 @@
+{
+  "name": "vue-prisma-product-app",
+  "private": true,
+  "packageManager": "pnpm@10.15.1",
+  "scripts": {
+    "dev": "concurrently -k \"pnpm --dir api dev\" \"pnpm --dir vue-app serve\"",
+    "build": "pnpm --dir api build && pnpm --dir vue-app build",
+    "typecheck": "pnpm --dir api typecheck && pnpm --dir vue-app typecheck:strict",
+    "lint": "pnpm --dir vue-app lint",
+    "test": "pnpm --dir api test",
+    "db:generate": "pnpm --dir api prisma:generate",
+    "db:migrate": "pnpm --dir api prisma:deploy"
+  },
+  "devDependencies": {
+    "concurrently": "^9.2.1"
+  }
+}

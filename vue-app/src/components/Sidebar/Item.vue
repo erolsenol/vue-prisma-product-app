@@ -23,8 +23,8 @@ export interface Props {
     icon: string
     size: number
     router: string
-    listState: boolean
-    hasChild: boolean
+    listState?: boolean
+    hasChild?: boolean
 }
 
 const props = defineProps<Props>()

@@ -40,9 +40,9 @@
               <img v-if="item.picture" :src="item.picture" class="img-thumbnail">
             </td>
             <td>{{ item.id }}</td>
-            <td>{{ item.products.lenght }}</td>
+            <td>{{ item.products?.length ?? 0 }}</td>
             <td>{{ item.parent_category?.name }}</td>
-            <td>{{ item.child_category.lenght }}</td>
+            <td>{{ item.child_category?.length ?? 0 }}</td>
           </tr>
         </tbody>
       </table>
@@ -66,8 +66,7 @@
   </div>
 </template>
 
-<script setup lang="ts" generic="CategoriesView extends Vue">
-import { Vue } from "vue-class-component"
+<script setup lang="ts">
 import { ref, reactive, onMounted, defineOptions } from "vue";
 import { useI18n } from "vue-i18n"
 import { useStore } from "vuex";
@@ -77,6 +76,7 @@ import CategoryForm from "@/components/Category/Form.vue"
 import CommonModal from "@/components/CommonModal.vue"
 
 import api from "@/service";
+import axios from "axios";
 import { categoryType, paginationType, tableType } from "@/types"
 
 defineOptions({
@@ -90,14 +90,14 @@ const store = useStore()
 
 let picture = ref<Blob | null>();
 let pictureName = ref<string>("");
-let pagination: paginationType = ref({})
+let pagination = ref<paginationType>({ page: 1, limit: 20, count: 0, totalPage: 0 })
 let formType = ref<(string)>("create")
-let category = ref<(categoryType)>({
+let category = ref<Partial<categoryType>>({
   id: 0,
   name: "",
   picture: ""
 })
-let table: tableType = reactive({
+let table = reactive<tableType<categoryType>>({
   items: [],
   headers: ['actions', 'id', 'name', 'picture', 'product', 'parent', 'child',],
   actions: [{ text: 'update', func: itemAction }, { text: 'delete', func: itemAction }]
@@ -110,8 +110,9 @@ function fileInput(file: File) {
 
   pictureName.value = file.name
 }
-function readFile(event) {
-  picture.value = event.target.result;
+function readFile(event: ProgressEvent<FileReader>) {
+  const result = event.target?.result
+  if (typeof result === "string") picture.value = new Blob([result])
 }
 
 async function itemAction() {
@@ -146,11 +147,11 @@ async function itemAction() {
 
     if (response?.status === 200 || response?.status === 201) {
       await getItems()
-      document.querySelector("#common-modal-close").click()
+      document.querySelector<HTMLButtonElement>("#common-modal-close")?.click()
       formType.value = ""
     }
   } catch (error) {
-    if (error?.response?.data?.message) {
+    if (axios.isAxiosError(error) && error.response?.data?.message) {
       store.commit('addToast', { title: t('error'), text: error.response.data.message })
     }
   }

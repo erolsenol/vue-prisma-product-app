@@ -14,8 +14,7 @@
     </div>
 </template>
   
-<script setup lang="ts" generic="Toast extends Vue">
-import { Vue } from "vue-class-component";
+<script setup lang="ts">
 import { computed } from "vue";
 import { useStore } from 'vuex'
 

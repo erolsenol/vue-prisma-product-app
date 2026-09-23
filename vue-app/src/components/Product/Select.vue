@@ -9,13 +9,11 @@
     </div>
 </template>
   
-<script setup lang="ts" generic="ProductSelect extends Vue">
-import { Vue } from "vue-class-component"
+<script setup lang="ts">
 import { ref, onMounted, defineOptions, defineModel, defineProps } from "vue";
 
 import api from "@/service";
 import { productType } from "@/types"
-import { useI18n } from "vue-i18n"
 
 defineOptions({
     name: 'ProductSelect',
@@ -24,7 +22,7 @@ defineOptions({
 
 const props = defineProps<{ disabled: boolean }>()
 
-const model = defineModel()
+const model = defineModel<string | number | undefined>()
 
 
 let items = ref<productType[]>([])

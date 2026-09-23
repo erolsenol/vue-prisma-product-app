@@ -43,8 +43,8 @@ export const getAllCategories = async (
       if (category?.picture) {
         const picturePath = categoryPicturePath(category.picture);
         pictureBase64 = await fileToBase64(picturePath, category.picture);
-        categoryArr.push({ ...category, picture: pictureBase64 });
       }
+      categoryArr.push({ ...category, picture: pictureBase64 });
     }
 
     const count = await prisma.category.count({ where: { deleted: false } });
