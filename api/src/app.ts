@@ -1,4 +1,5 @@
 import cors from "@fastify/cors";
+import helmet from "@fastify/helmet";
 import multipart from "@fastify/multipart";
 import rateLimit from "@fastify/rate-limit";
 import Fastify, { FastifyInstance } from "fastify";
@@ -41,6 +42,7 @@ export async function buildApp(options: AppOptions = {}): Promise<FastifyInstanc
   await app.register(cors, {
     origin: options.corsOrigin ?? process.env.API_CORS_ORIGIN ?? false,
   });
+  await app.register(helmet);
   await app.register(rateLimit, {
     max: options.rateLimitMax ?? Number(process.env.API_RATE_LIMIT_MAX ?? 100),
     timeWindow: options.rateLimitTimeWindow ?? process.env.API_RATE_LIMIT_WINDOW ?? "1 minute",

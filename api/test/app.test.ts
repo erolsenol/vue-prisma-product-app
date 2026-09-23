@@ -14,6 +14,18 @@ describe("API application", () => {
     await app.close();
   });
 
+  it("sets baseline security headers", async () => {
+    const app = await buildApp({ logger: false });
+
+    const response = await app.inject({ method: "GET", url: "/health/live" });
+
+    expect(response.statusCode).toBe(200);
+    expect(response.headers["x-content-type-options"]).toBe("nosniff");
+    expect(response.headers["x-frame-options"]).toBe("SAMEORIGIN");
+
+    await app.close();
+  });
+
   it("enforces the configured request rate limit", async () => {
     const app = await buildApp({ logger: false, rateLimitMax: 1, rateLimitTimeWindow: "1 minute" });
 
