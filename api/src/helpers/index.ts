@@ -1,6 +1,8 @@
 import fs from "fs";
 import path from "path";
 
+const MAX_PICTURE_BYTES = 5 * 1024 * 1024;
+
 export function getPaginationObj(page: number, limit: number, count: number) {
   const normalizedLimit = Math.max(1, Number(limit));
 
@@ -17,55 +19,41 @@ export async function pictureSave(
   name: string,
   owner: string
 ): Promise<boolean> {
-  return new Promise<boolean>((resolve, reject) => {
-    try {
-      if(!file || !name) return resolve(false)
-      if (!isSafePictureName(name)) return resolve(false)
-      const path = `${process.cwd()}/src/pictures/${owner}/`;
+  if (!isValidPictureData(file) || !isSafePictureName(name)) return false;
 
-      const pathArr = path.split("/");
-      let strPath = ``;
-      for (let index = 1; index < pathArr.length - 1; index++) {
-        const pathStr = pathArr[index];
-
-        strPath += `/${pathStr}`;
-
-        if (!fs.existsSync(strPath)) {
-          fs.mkdirSync(strPath);
-        }
-      }
-
-      const base64Data = file.replace(/^data:image\/\w+;base64,/, "");
-
-      const writePath = `${path}${name}`;
-      fs.writeFile(writePath, base64Data, "base64", function (err) {
-        if (err) {
-          return resolve(false);
-        }
-        return resolve(true);
-      });
-    } catch (error) {
-      return reject(false);
-    }
-  });
+  try {
+    const directory = path.join(process.cwd(), "src", "pictures", owner);
+    await fs.promises.mkdir(directory, { recursive: true });
+    const base64Data = file.slice(file.indexOf(",") + 1);
+    await fs.promises.writeFile(path.join(directory, name), base64Data, "base64");
+    return true;
+  } catch {
+    return false;
+  }
 }
 
-export async function pictureDelete(name: string | null, owner: string) {
-  return new Promise<boolean>((resolve, reject) => {
-    if (!name || !isSafePictureName(name)) return resolve(false)
-    const path = `${process.cwd()}/src/pictures/${owner}/${name}`;
-    fs.access(path, fs.constants.F_OK, async (err) => {
-      if (err) {
-        return resolve(false);
-      }
-      await fs.unlinkSync(path);
-      return resolve(true);
-    });
-  });
+export async function pictureDelete(name: string | null, owner: string): Promise<boolean> {
+  if (!name || !isSafePictureName(name)) return false;
+
+  try {
+    await fs.promises.unlink(path.join(process.cwd(), "src", "pictures", owner, name));
+    return true;
+  } catch {
+    return false;
+  }
+}
+
+export function isValidPictureData(file: string): boolean {
+  if (!file || !file.startsWith("data:image/")) return false;
+
+  const match = /^data:image\/(gif|jpeg|jpg|png|webp);base64,([A-Za-z0-9+/]+={0,2})$/.exec(file);
+  if (!match) return false;
+
+  return Buffer.byteLength(match[2], "base64") <= MAX_PICTURE_BYTES;
 }
 
 function isSafePictureName(name: string): boolean {
-  return path.basename(name) === name && /^[A-Za-z0-9][A-Za-z0-9._-]*$/.test(name)
+  return path.basename(name) === name && /^[A-Za-z0-9][A-Za-z0-9._-]*$/.test(name);
 }
 
 export async function fileToBase64(

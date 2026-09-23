@@ -12,7 +12,10 @@ export interface AppOptions {
 }
 
 export async function buildApp(options: AppOptions = {}): Promise<FastifyInstance> {
-  const app = Fastify({ logger: options.logger ?? true });
+  const app = Fastify({
+    logger: options.logger ?? true,
+    bodyLimit: 6 * 1024 * 1024,
+  });
 
   app.setErrorHandler((error, _request, reply) => {
     if (error.validation) {
@@ -27,7 +30,7 @@ export async function buildApp(options: AppOptions = {}): Promise<FastifyInstanc
   });
 
   await app.register(cors, {
-    origin: options.corsOrigin ?? process.env.API_CORS_ORIGIN ?? true,
+    origin: options.corsOrigin ?? process.env.API_CORS_ORIGIN ?? false,
   });
   await app.register(multipart, { attachFieldsToBody: true });
 

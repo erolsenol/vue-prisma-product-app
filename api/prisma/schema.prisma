@@ -20,6 +20,9 @@ model Category {
     parent_category Category?  @relation("ParentRelation", fields: [parent_id], references: [id])
     child_category  Category[] @relation("ParentRelation")
     products        Product[]
+
+    @@index([deleted])
+    @@index([parent_id, deleted])
 }
 
 model Product {
@@ -32,4 +35,7 @@ model Product {
     deleted_time DateTime?
     category_id  Int
     category     Category  @relation(fields: [category_id], references: [id])
+
+    @@index([category_id, deleted])
+    @@index([deleted])
 }

@@ -11,6 +11,8 @@ permissions:
 jobs:
   api:
     runs-on: ubuntu-latest
+    env:
+      DATABASE_URL: mysql://root:password@localhost:3306/db
     steps:
       - uses: actions/checkout@v4
       - uses: pnpm/action-setup@v4
@@ -21,8 +23,10 @@ jobs:
           node-version: 22
           cache: pnpm
       - run: pnpm install --frozen-lockfile
+      - run: pnpm --dir api exec prisma validate
       - run: pnpm --dir api prisma:generate
       - run: pnpm --dir api typecheck
+      - run: pnpm --dir api build
       - run: pnpm --dir api test
 
   frontend:

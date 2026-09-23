@@ -25,6 +25,8 @@ export interface stateType {
   products: productType[]
   categories: categoryType[]
   toastItems: toastType[]
+  isLoading: boolean
+  error: string | null
 }
 
 export interface paginationType {

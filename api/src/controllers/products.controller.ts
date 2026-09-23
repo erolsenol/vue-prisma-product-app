@@ -9,6 +9,7 @@ import {
   pictureSave,
   pictureDelete,
   fileToBase64,
+  isValidPictureData,
 } from "../helpers";
 
 import { ProductType, ProductParamsIdType } from "types/products";
@@ -58,10 +59,23 @@ export const createProducts = async (
   try {
     const { name, picture, picture_name, category_id } = request.body;
 
+    if (picture !== undefined || picture_name !== undefined) {
+      if (!picture || !picture_name || !isValidPictureData(picture)) {
+        throw new HttpError(400, "Invalid picture payload");
+      }
+    }
+
     const category = await prisma.category.findFirst({ where: { id: category_id, deleted: false } });
     if (!category) throw new HttpError(400, "Category not found");
 
-    await pictureSave(picture, picture_name, "product");
+    if (picture !== undefined || picture_name !== undefined) {
+      if (!picture || !picture_name || !isValidPictureData(picture)) {
+        throw new HttpError(400, "Invalid picture payload");
+      }
+      if (!(await pictureSave(picture, picture_name, "product"))) {
+        throw new HttpError(400, "Picture could not be saved");
+      }
+    }
 
     const product = await prisma.product.create({
       data: {
@@ -85,6 +99,12 @@ export const updateProducts = async (
     const id = Number(request.params.id);
     const { name, picture, picture_name, category_id } = request.body;
 
+    if (picture !== undefined || picture_name !== undefined) {
+      if (!picture || !picture_name || !isValidPictureData(picture)) {
+        throw new HttpError(400, "Invalid picture payload");
+      }
+    }
+
     const oldProduct = await prisma.product.findFirst({ where: { id, deleted: false } });
     if (!oldProduct) throw new HttpError(404, "Product not found");
 
@@ -93,8 +113,10 @@ export const updateProducts = async (
       if (!category) throw new HttpError(400, "Category not found");
     }
 
-    if (picture && picture_name) {
-      await pictureSave(picture, picture_name, "product");
+    if (picture !== undefined || picture_name !== undefined) {
+      if (!(await pictureSave(picture, picture_name, "product"))) {
+        throw new HttpError(400, "Picture could not be saved");
+      }
       await pictureDelete(oldProduct.picture, "product");
     }
 
