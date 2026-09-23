@@ -1,4 +1,7 @@
 <template>
+  <div v-if="store.state.error" class="app-error" role="alert" aria-live="polite">
+    {{ store.state.error }}
+  </div>
   <component :is="$route.meta.layout || 'div'">
     <router-view />
   </component>
@@ -17,7 +20,7 @@ defineOptions({
 })
 
 onMounted(async () => {
-  store.dispatch("initData")
+  await store.dispatch("initData").catch(() => undefined)
 })
 </script>
 
@@ -42,5 +45,18 @@ nav a {
 
 nav a.router-link-exact-active {
   color: #42b983;
+}
+
+.app-error {
+  position: fixed;
+  z-index: 2000;
+  top: 1rem;
+  right: 1rem;
+  max-width: min(28rem, calc(100vw - 2rem));
+  padding: 0.75rem 1rem;
+  color: #842029;
+  background: #f8d7da;
+  border: 1px solid #f5c2c7;
+  border-radius: 0.375rem;
 }
 </style>

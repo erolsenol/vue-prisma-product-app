@@ -98,4 +98,24 @@ describe("API application", () => {
 
     await app.close();
   });
+
+  it("rejects invalid image payloads before reaching the database", async () => {
+    const app = await buildApp({ logger: false });
+
+    const response = await app.inject({
+      method: "POST",
+      url: "/api/products",
+      payload: {
+        name: "Keyboard",
+        category_id: 1,
+        picture: "data:text/plain;base64,SGVsbG8=",
+        picture_name: "keyboard.txt",
+      },
+    });
+
+    expect(response.statusCode).toBe(400);
+    expect(response.json()).toEqual({ message: "Invalid picture payload" });
+
+    await app.close();
+  });
 });

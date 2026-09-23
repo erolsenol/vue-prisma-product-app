@@ -37,6 +37,7 @@ pnpm build
 ```
 
 The API and frontend both pass strict TypeScript checks. The frontend SFC check is available as `pnpm --dir vue-app typecheck:strict`.
+CI also validates the Prisma schema and compiles the production API bundle.
 
 ## API health endpoints
 
@@ -52,6 +53,7 @@ pnpm db:migrate
 ```
 
 Database credentials are supplied through `DATABASE_URL`; do not commit `.env` files or production secrets.
+Apply database migrations with `pnpm db:migrate` before starting a deployed API.
 
 ## Roadmap
 

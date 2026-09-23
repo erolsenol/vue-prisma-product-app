@@ -9,6 +9,7 @@ import {
   pictureSave,
   pictureDelete,
   fileToBase64,
+  isValidPictureData,
 } from "../helpers";
 
 import { CategoryType, CategoryParamsIdType } from "types/categories";
@@ -60,12 +61,25 @@ export const createCategories = async (
   try {
     const { name, picture, picture_name, parent_id } = request.body;
 
+    if (picture !== undefined || picture_name !== undefined) {
+      if (!picture || !picture_name || !isValidPictureData(picture)) {
+        throw new HttpError(400, "Invalid picture payload");
+      }
+    }
+
     if (parent_id !== undefined && parent_id !== null) {
       const parent = await prisma.category.findFirst({ where: { id: parent_id, deleted: false } });
       if (!parent) throw new HttpError(400, "Parent category not found");
     }
 
-    await pictureSave(picture, picture_name, "category");
+    if (picture !== undefined || picture_name !== undefined) {
+      if (!picture || !picture_name || !isValidPictureData(picture)) {
+        throw new HttpError(400, "Invalid picture payload");
+      }
+      if (!(await pictureSave(picture, picture_name, "category"))) {
+        throw new HttpError(400, "Picture could not be saved");
+      }
+    }
 
     const category = await prisma.category.create({
       data: {
@@ -89,6 +103,12 @@ export const updateCategories = async (
     const id = Number(request.params.id);
     const { name, picture, picture_name, parent_id } = request.body;
 
+    if (picture !== undefined || picture_name !== undefined) {
+      if (!picture || !picture_name || !isValidPictureData(picture)) {
+        throw new HttpError(400, "Invalid picture payload");
+      }
+    }
+
     const oldCategory = await prisma.category.findFirst({ where: { id, deleted: false } });
     if (!oldCategory) throw new HttpError(404, "Category not found");
     if (parent_id === id) throw new HttpError(400, "Category cannot be its own parent");
@@ -102,8 +122,10 @@ export const updateCategories = async (
       ...(parent_id !== undefined ? { parent_id } : {}),
     };
 
-    if (picture && picture_name) {
-      await pictureSave(picture, picture_name, "category");
+    if (picture !== undefined || picture_name !== undefined) {
+      if (!(await pictureSave(picture, picture_name, "category"))) {
+        throw new HttpError(400, "Picture could not be saved");
+      }
       await pictureDelete(oldCategory.picture, "category");
     }
 
