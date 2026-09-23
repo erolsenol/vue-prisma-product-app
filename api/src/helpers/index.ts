@@ -1,4 +1,5 @@
 import fs from "fs";
+import path from "path";
 
 export function getPaginationObj(page: number, limit: number, count: number) {
   return {
@@ -17,6 +18,7 @@ export async function pictureSave(
   return new Promise<boolean>((resolve, reject) => {
     try {
       if(!file || !name) return resolve(false)
+      if (!isSafePictureName(name)) return resolve(false)
       const path = `${process.cwd()}/src/pictures/${owner}/`;
 
       const pathArr = path.split("/");
@@ -48,6 +50,7 @@ export async function pictureSave(
 
 export async function pictureDelete(name: string | null, owner: string) {
   return new Promise<boolean>((resolve, reject) => {
+    if (!name || !isSafePictureName(name)) return resolve(false)
     const path = `${process.cwd()}/src/pictures/${owner}/${name}`;
     fs.access(path, fs.constants.F_OK, async (err) => {
       if (err) {
@@ -57,6 +60,10 @@ export async function pictureDelete(name: string | null, owner: string) {
       return resolve(true);
     });
   });
+}
+
+function isSafePictureName(name: string): boolean {
+  return path.basename(name) === name && /^[A-Za-z0-9][A-Za-z0-9._-]*$/.test(name)
 }
 
 export async function fileToBase64(

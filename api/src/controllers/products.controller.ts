@@ -2,7 +2,7 @@ import { FastifyReply, FastifyRequest } from "fastify";
 import prisma from "../../prisma";
 
 import { STANDARD } from "../helpers/constants";
-import { handleServerError } from "../helpers/errors";
+import { handleServerError, HttpError } from "../helpers/errors";
 import { momentClient } from "../helpers/moment";
 import {
   getPaginationObj,
@@ -24,7 +24,7 @@ export const getAllProducts = async (
     const products = await prisma.product.findMany({
       skip: (page - 1) * limit,
       take: Number(limit),
-      where: { deleted: false },
+      where: { deleted: false, category: { deleted: false } },
       include: {
         category: true,
       },
@@ -41,7 +41,9 @@ export const getAllProducts = async (
       productArr.push({ ...product, picture: pictureBase64 });
     }
 
-    const count = await prisma.product.count({ where: { deleted: false } });
+    const count = await prisma.product.count({
+      where: { deleted: false, category: { deleted: false } },
+    });
 
     reply.status(STANDARD.SUCCESS).send({
       data: productArr,
@@ -58,6 +60,9 @@ export const createProducts = async (
 ) => {
   try {
     const { name, picture, picture_name, category_id } = request.body;
+
+    const category = await prisma.category.findFirst({ where: { id: category_id, deleted: false } });
+    if (!category) throw new HttpError(400, "Category not found");
 
     await pictureSave(picture, picture_name, "product");
 
@@ -83,20 +88,28 @@ export const updateProducts = async (
     const id = Number(request.params.id);
     const { name, picture, picture_name, category_id } = request.body;
 
-    const oldProduct = await prisma.product.findUnique({ where: { id } });
+    const oldProduct = await prisma.product.findFirst({ where: { id, deleted: false } });
+    if (!oldProduct) throw new HttpError(404, "Product not found");
 
-    if (picture && picture_name && oldProduct) {
-      await pictureDelete(oldProduct.picture, "product");
-      await pictureSave(picture, picture_name, "product");
+    if (category_id !== undefined) {
+      const category = await prisma.category.findFirst({ where: { id: category_id, deleted: false } });
+      if (!category) throw new HttpError(400, "Category not found");
     }
+
+    if (picture && picture_name) {
+      await pictureSave(picture, picture_name, "product");
+      await pictureDelete(oldProduct.picture, "product");
+    }
+
+    const data = {
+      ...(name !== undefined ? { name } : {}),
+      ...(picture_name !== undefined ? { picture: picture_name } : {}),
+      ...(category_id !== undefined ? { category_id } : {}),
+    };
 
     const product = await prisma.product.update({
       where: { id },
-      data: {
-        name,
-        picture: picture_name,
-        category_id,
-      },
+      data,
     });
 
     reply.status(STANDARD.SUCCESS).send({ data: product });
@@ -112,9 +125,12 @@ export const getProducts = async (
   try {
     const id = Number(request.params.id);
 
-    const product = await prisma.product.findUnique({
-      where: { id },
+    const product = await prisma.product.findFirst({
+      where: { id, deleted: false },
+      include: { category: true },
     });
+
+    if (!product) throw new HttpError(404, "Product not found");
 
     let pictureBase64;
     if (product?.picture) {
@@ -138,8 +154,9 @@ export const deleteProducts = async (
     const id = Number(request.params.id);
     const deleted_time = momentClient.getDeleteTime(Date.now());
 
-    const oldProduct = await prisma.product.findUnique({ where: { id } });
-    if (oldProduct?.picture) {
+    const oldProduct = await prisma.product.findFirst({ where: { id, deleted: false } });
+    if (!oldProduct) throw new HttpError(404, "Product not found");
+    if (oldProduct.picture) {
       await pictureDelete(oldProduct.picture, "product");
     }
 

@@ -2,7 +2,7 @@ import { FastifyReply, FastifyRequest } from "fastify";
 import prisma from "../../prisma";
 
 import { STANDARD } from "../helpers/constants";
-import { handleServerError } from "../helpers/errors";
+import { handleServerError, HttpError } from "../helpers/errors";
 import { momentClient } from "../helpers/moment";
 import {
   getPaginationObj,
@@ -30,9 +30,9 @@ export const getAllCategories = async (
       take: Number(limit),
       where: { deleted: false },
       include: {
-        parent_category: true,
-        child_category: true,
-        products: true,
+        parent_category: { where: { deleted: false } },
+        child_category: { where: { deleted: false } },
+        products: { where: { deleted: false } },
       },
     });
 
@@ -65,13 +65,18 @@ export const createCategories = async (
   try {
     const { name, picture, picture_name, parent_id } = request.body;
 
+    if (parent_id !== undefined && parent_id !== null) {
+      const parent = await prisma.category.findFirst({ where: { id: parent_id, deleted: false } });
+      if (!parent) throw new HttpError(400, "Parent category not found");
+    }
+
     await pictureSave(picture, picture_name, "category");
 
     const category = await prisma.category.create({
       data: {
         name,
         picture: picture_name,
-        parent_id,
+        parent_id: parent_id ?? null,
       },
     });
 
@@ -89,19 +94,27 @@ export const updateCategories = async (
     const id = Number(request.params.id);
     const { name, picture, picture_name, parent_id } = request.body;
 
-    const oldCategory = await prisma.category.findUnique({ where: { id } });
-    if (picture && picture_name && oldCategory) {
-      await pictureDelete(oldCategory.picture, "category");
+    const oldCategory = await prisma.category.findFirst({ where: { id, deleted: false } });
+    if (!oldCategory) throw new HttpError(404, "Category not found");
+    if (parent_id === id) throw new HttpError(400, "Category cannot be its own parent");
+    if (parent_id !== undefined && parent_id !== null) {
+      const parent = await prisma.category.findFirst({ where: { id: parent_id, deleted: false } });
+      if (!parent) throw new HttpError(400, "Parent category not found");
+    }
+    const data = {
+      ...(name !== undefined ? { name } : {}),
+      ...(picture_name !== undefined ? { picture: picture_name } : {}),
+      ...(parent_id !== undefined ? { parent_id } : {}),
+    };
+
+    if (picture && picture_name) {
       await pictureSave(picture, picture_name, "category");
+      await pictureDelete(oldCategory.picture, "category");
     }
 
     const category = await prisma.category.update({
       where: { id },
-      data: {
-        name,
-        picture: picture_name,
-        parent_id,
-      },
+      data,
     });
 
     reply.status(STANDARD.SUCCESS).send({ data: category });
@@ -117,9 +130,11 @@ export const getCategories = async (
   try {
     const id = Number(request.params.id);
 
-    const category = await prisma.category.findUnique({
-      where: { id },
+    const category = await prisma.category.findFirst({
+      where: { id, deleted: false },
     });
+
+    if (!category) throw new HttpError(404, "Category not found");
 
     let pictureBase64;
     if (category?.picture) {
@@ -143,7 +158,12 @@ export const deleteCategories = async (
     const id = Number(request.params.id);
     const deleted_time = momentClient.getDeleteTime(Date.now());
 
-    const oldCategory = await prisma.category.findUnique({ where: { id } });
+    const oldCategory = await prisma.category.findFirst({ where: { id, deleted: false } });
+    if (!oldCategory) throw new HttpError(404, "Category not found");
+    const activeProducts = await prisma.product.count({ where: { category_id: id, deleted: false } });
+    if (activeProducts > 0) {
+      throw new HttpError(409, "Category cannot be deleted while it has active products");
+    }
     if (oldCategory?.picture) {
       await pictureDelete(oldCategory.picture, "category");
     }
