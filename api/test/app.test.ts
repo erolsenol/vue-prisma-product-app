@@ -14,6 +14,18 @@ describe("API application", () => {
     await app.close();
   });
 
+  it("enforces the configured request rate limit", async () => {
+    const app = await buildApp({ logger: false, rateLimitMax: 1, rateLimitTimeWindow: "1 minute" });
+
+    const firstResponse = await app.inject({ method: "GET", url: "/ping" });
+    const limitedResponse = await app.inject({ method: "GET", url: "/ping" });
+
+    expect(firstResponse.statusCode).toBe(200);
+    expect(limitedResponse.statusCode).toBe(429);
+
+    await app.close();
+  });
+
   it("keeps the public ping contract", async () => {
     const app = await buildApp({ logger: false });
 
