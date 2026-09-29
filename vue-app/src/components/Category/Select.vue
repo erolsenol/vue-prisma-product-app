@@ -10,7 +10,7 @@
 </template>
   
 <script setup lang="ts">
-import { ref, onMounted, defineOptions, defineModel, defineProps, watch } from "vue";
+import { ref, onMounted, watch } from "vue";
 
 import api from "@/service";
 import { categoryType } from "@/types"

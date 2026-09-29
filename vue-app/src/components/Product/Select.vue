@@ -10,7 +10,7 @@
 </template>
   
 <script setup lang="ts">
-import { ref, onMounted, defineOptions, defineModel, defineProps } from "vue";
+import { ref, onMounted } from "vue";
 
 import api from "@/service";
 import { productType } from "@/types"

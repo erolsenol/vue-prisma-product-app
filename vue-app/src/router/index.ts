@@ -5,8 +5,7 @@ const routes: Array<RouteRecordRaw> = [
   {
     path: "/",
     name: "home",
-    component: () =>
-      import(/* webpackChunkName: "about" */ "../views/HomeView.vue"),
+    component: () => import("../views/HomeView.vue"),
     meta: {
       layout: DefaultLayout,
     },
@@ -14,8 +13,7 @@ const routes: Array<RouteRecordRaw> = [
   {
     path: "/categories",
     name: "categories",
-    component: () =>
-      import(/* webpackChunkName: "about" */ "../views/CategoriesView.vue"),
+    component: () => import("../views/CategoriesView.vue"),
     meta: {
       layout: DefaultLayout,
     },
@@ -23,8 +21,7 @@ const routes: Array<RouteRecordRaw> = [
   {
     path: "/products",
     name: "products",
-    component: () =>
-      import(/* webpackChunkName: "about" */ "../views/ProductsView.vue"),
+    component: () => import("../views/ProductsView.vue"),
     meta: {
       layout: DefaultLayout,
     },
@@ -32,7 +29,7 @@ const routes: Array<RouteRecordRaw> = [
 ]
 
 const router = createRouter({
-  history: createWebHistory(process.env.BASE_URL),
+  history: createWebHistory(import.meta.env.BASE_URL),
   routes,
 })
 

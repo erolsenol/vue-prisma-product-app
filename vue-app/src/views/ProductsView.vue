@@ -65,9 +65,9 @@
 </template>
 
 <script setup lang="ts">
-import { ref, reactive, onMounted, defineOptions } from "vue";
+import { ref, reactive, onMounted } from "vue";
 import { useI18n } from "vue-i18n"
-import { useStore } from "vuex";
+import { useAppStore } from "@/stores/app";
 
 import Pagination from "@/components/Pagination.vue"
 import ProductForm from "@/components/Product/Form.vue"
@@ -83,7 +83,7 @@ defineOptions({
 })
 
 const { t } = useI18n()
-const store = useStore()
+const store = useAppStore()
 
 let pagination = ref<paginationType>({ page: 1, limit: 20, count: 0, totalPage: 0 })
 let formType = ref<(string)>("create")
@@ -147,7 +147,7 @@ async function itemAction() {
     }
   } catch (error) {
     if (axios.isAxiosError(error) && error.response?.data?.message) {
-      store.commit('addToast', { title: t('error'), text: error.response.data.message })
+      store.addToast({ title: t('error'), text: error.response.data.message })
     }
   }
 }

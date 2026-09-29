@@ -11,7 +11,7 @@
 </template>
 
 <script setup lang="ts">
-import { defineProps, defineOptions, reactive } from "vue"
+import { reactive } from "vue"
 
 defineOptions({
   name: 'HeaderItem',

@@ -17,7 +17,7 @@
 </template>
   
 <script setup lang="ts">
-import { defineModel, defineProps, defineOptions, computed, defineEmits } from "vue";
+import { computed } from "vue";
 
 import CategorySelect from "@/components/Category/Select.vue"
 import { productType } from "@/types";

@@ -1,6 +1,6 @@
 <template>
-  <div v-if="store.state.error" class="app-error" role="alert" aria-live="polite">
-    {{ store.state.error }}
+  <div v-if="store.error" class="app-error" role="alert" aria-live="polite">
+    {{ store.error }}
   </div>
   <component :is="$route.meta.layout || 'div'">
     <router-view />
@@ -8,19 +8,16 @@
   <Toast />
 </template>
 
-<script setup>
-import { onMounted, defineOptions } from "vue"
-import store from "@/store"
+<script setup lang="ts">
+import { onMounted } from "vue"
 
-import Toast from "@/components/Toast"
+import Toast from "@/components/Toast.vue"
+import { useAppStore } from "@/stores/app"
 
-defineOptions({
-  name: 'App',
-  components: { Toast },
-})
+const store = useAppStore()
 
 onMounted(async () => {
-  await store.dispatch("initData").catch(() => undefined)
+  await store.initData().catch(() => undefined)
 })
 </script>
 
