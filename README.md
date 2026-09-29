@@ -5,9 +5,10 @@ Typed full-stack product and category management application built with Vue 3, F
 ## Architecture
 
 - `api/`: Fastify HTTP API, Prisma data access and image handling
-- `vue-app/`: Vue 3 frontend with Vue Router, Vuex and i18n
+- `vue-app/`: Vue 3 frontend with Vite, Pinia, Vue Router and i18n
 - `docker-compose.yml`: local MySQL, API and frontend services
 - `api/test/`: API integration tests using Fastify injection
+- `vue-app/src/stores/`: Pinia state and focused store behavior tests
 
 The repository is managed as a workspace. Node.js 22 is the supported runtime.
 
@@ -57,8 +58,15 @@ Apply database migrations with `pnpm db:migrate` before starting a deployed API.
 
 ## Roadmap
 
-1. Replace Vue CLI with Vite/Nuxt 4 and Vuex with Pinia/TanStack Query.
-2. Introduce shared API contracts and generated client types.
-3. Migrate the database layer to the selected production database strategy.
-4. Add product/category E2E tests, authentication and authorization.
-5. Harden image storage, observability, container images and production deployment.
+### Completed
+
+- Replaced Vue CLI/Webpack and Vuex with Vite and Pinia.
+- Added Pinia store tests and retained strict Vue SFC type checking.
+- Built the frontend image from the workspace lockfile and added same-origin API proxying plus SPA route fallback.
+
+### Next
+
+1. Introduce shared API contracts and generated client types.
+2. Add product/category E2E tests, authentication and authorization.
+3. Harden image storage and observability.
+4. Evaluate Nuxt 4 and a production database strategy when deployment requirements are defined.

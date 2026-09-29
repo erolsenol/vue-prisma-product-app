@@ -19,8 +19,8 @@
 </template>
 
 <script setup lang="ts">
-import { defineOptions, computed, ref } from "vue"
-import { useStore } from "vuex"
+import { computed, ref } from "vue"
+import { useAppStore } from "@/stores/app"
 
 import AppIcon from "../Icons/AppIcon.vue"
 import SidebarItem from "./Item.vue"
@@ -39,7 +39,7 @@ defineOptions({
     name: 'SideBar',
     components: { SidebarItem, AppIcon, SidebarList },
 })
-const store = useStore()
+const store = useAppStore()
 
 const sidebarData = ref<SidebarEntry[]>([
     {
@@ -61,7 +61,7 @@ const items = computed(() => {
         icon: "ri-file-list-3-line",
         router: "categories",
         parent_id: undefined,
-        child_category: store.getters['getCategories'].map((item: SidebarEntry) => ({ ...item }))
+        child_category: store.categories.map((item: SidebarEntry) => ({ ...item }))
     },]
 })
 

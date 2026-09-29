@@ -16,13 +16,11 @@
   
 <script setup lang="ts">
 import { computed } from "vue";
-import { useStore } from 'vuex'
+import { useAppStore } from "@/stores/app"
 
-const store = useStore()
+const store = useAppStore()
 
-const toastItems = computed(() => {
-    return store.getters["getToast"]
-})
+const toastItems = computed(() => store.toastItems)
 </script>
   
 <style scoped lang="scss">

@@ -17,7 +17,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, defineOptions } from 'vue'
+import { ref } from 'vue'
 
 import HeaderItem from "./Item.vue"
 import ChangeLang from "./ChangeLang.vue"
@@ -25,7 +25,7 @@ import AppIcon from "../Icons/AppIcon.vue"
 import HeaderData from "@/data/header"
 
 defineOptions({
-  name: 'Header',
+  name: 'AppHeader',
   components: { HeaderItem, ChangeLang, AppIcon },
 })
 

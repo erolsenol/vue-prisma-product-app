@@ -10,15 +10,9 @@
   </div>
 </template>
   
-<script lang="ts">
-import { Options, Vue } from "vue-class-component"
+<script setup lang="ts">
 import Header from "@/components/Header/Index.vue"
 import Sidebar from "@/components/Sidebar/Index.vue"
-
-@Options({
-  components: { Header, Sidebar },
-})
-export default class LayoutDefault extends Vue { }
 </script>
   
 <style lang="scss">

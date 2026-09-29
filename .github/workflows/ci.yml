@@ -58,6 +58,7 @@ jobs:
       - run: pnpm install --frozen-lockfile
       - run: pnpm --dir vue-app typecheck:strict
       - run: pnpm --dir vue-app lint
+      - run: pnpm --dir vue-app test
       - run: pnpm --dir vue-app build
 
   docker:
@@ -80,7 +81,7 @@ jobs:
       - name: Build frontend image
         uses: docker/build-push-action@v6
         with:
-          context: ./vue-app
+          context: .
           file: ./vue-app/Dockerfile
           push: false
           tags: vue-prisma-product-app/frontend:ci

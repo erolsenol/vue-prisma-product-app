@@ -16,7 +16,7 @@
 </template>
 
 <script setup lang="ts">
-import { computed, defineOptions, defineProps, ref } from "vue"
+import { computed, ref } from "vue"
 import SidebarItem from "./Item.vue"
 
 defineOptions({
