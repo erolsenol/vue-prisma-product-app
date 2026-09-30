@@ -1,7 +1,7 @@
-import axios from "axios"
 import { defineStore } from "pinia"
 
 import api from "@/service"
+import { getApiErrorMessage } from "@/service/errors"
 import type { categoryType, productType, toastType } from "@/types"
 
 interface AppState {
@@ -42,7 +42,7 @@ export const useAppStore = defineStore("app", {
         const response = await api.get("/api/categories")
         if (response.status === 200) this.categories = response.data.data
       } catch (error: unknown) {
-        this.error = getApiErrorMessage(error)
+        this.error = getApiErrorMessage(error, "Unable to load application data")
         throw error
       }
     },
@@ -51,18 +51,9 @@ export const useAppStore = defineStore("app", {
         const response = await api.get("/api/products")
         if (response.status === 200) this.products = response.data.data
       } catch (error: unknown) {
-        this.error = getApiErrorMessage(error)
+        this.error = getApiErrorMessage(error, "Unable to load application data")
         throw error
       }
     },
   },
 })
-
-function getApiErrorMessage(error: unknown): string {
-  if (axios.isAxiosError(error)) {
-    const message: unknown = error.response?.data?.message
-    if (typeof message === "string") return message
-  }
-
-  return "Unable to load application data"
-}

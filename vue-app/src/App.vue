@@ -1,5 +1,5 @@
 <template>
-  <div v-if="store.error" class="app-error" role="alert" aria-live="polite">
+  <div v-if="store.error && route.name === 'home'" class="app-error" role="alert" aria-live="polite">
     {{ store.error }}
   </div>
   <component :is="$route.meta.layout || 'div'">
@@ -10,11 +10,13 @@
 
 <script setup lang="ts">
 import { onMounted } from "vue"
+import { useRoute } from "vue-router"
 
 import Toast from "@/components/Toast.vue"
 import { useAppStore } from "@/stores/app"
 
 const store = useAppStore()
+const route = useRoute()
 
 onMounted(async () => {
   await store.initData().catch(() => undefined)
