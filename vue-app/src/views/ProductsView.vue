@@ -10,7 +10,13 @@
     </div>
 
     <div class="border-top my-2"></div>
-    <div class="page-table">
+    <div v-if="loadError" class="alert alert-danger d-flex justify-content-between align-items-center" role="alert">
+      <span>{{ loadError }}</span>
+      <button type="button" class="btn btn-link" :disabled="isLoading" @click="getItems()">
+        {{ t('retry') }}
+      </button>
+    </div>
+    <div class="page-table" :aria-busy="isLoading">
       <table class="table table-striped">
         <thead>
           <tr>
@@ -18,18 +24,25 @@
           </tr>
         </thead>
         <tbody>
-          <tr v-for="(item, index) in table.items" :key="index">
+          <tr v-if="isLoading && !table.items.length">
+            <td :colspan="table.headers.length" class="text-center py-4" role="status">{{ t('loading') }}</td>
+          </tr>
+          <tr v-else-if="!isLoading && !loadError && !table.items.length">
+            <td :colspan="table.headers.length" class="text-center py-4 text-body-secondary">{{ t('noProducts') }}</td>
+          </tr>
+          <template v-else>
+          <tr v-for="(item, index) in table.items" :key="item.id ?? index">
             <th>
               <div class="btn-group">
                 <button type="button" class="btn btn-secondary dropdown-toggle" data-bs-toggle="dropdown">
                   {{ t('actions') }}
                 </button>
                 <ul class="dropdown-menu">
-                  <li><a class="dropdown-item text-primary" data-bs-toggle="modal" data-bs-target="#common-modal"
-                      @click="showModal('update', item.id)">{{ t('update') }}</a>
+                  <li><button type="button" class="dropdown-item text-primary" data-bs-toggle="modal" data-bs-target="#common-modal"
+                      @click="showModal('update', item.id)">{{ t('update') }}</button>
                   </li>
-                  <li><a class="dropdown-item text-danger" data-bs-toggle="modal" data-bs-target="#common-modal"
-                      @click="showModal('delete', item.id)">{{ t('delete') }}</a>
+                  <li><button type="button" class="dropdown-item text-danger" data-bs-toggle="modal" data-bs-target="#common-modal"
+                      @click="showModal('delete', item.id)">{{ t('delete') }}</button>
                   </li>
                 </ul>
               </div>
@@ -39,9 +52,9 @@
             <td>
               <img v-if="item.picture" :src="item.picture" class="img-thumbnail">
             </td>
-            <td>{{ item.id }}</td>
             <td>{{ item.category.name }}</td>
           </tr>
+          </template>
         </tbody>
       </table>
     </div>
@@ -57,7 +70,7 @@
           {{ $t('close') }}
         </button>
         <button type="button" class="btn" :class="formType === 'delete' ? 'btn-danger' : 'btn-primary'"
-          @click="itemAction">{{ $t(formType) }}</button>
+          :disabled="isSaving" @click="itemAction">{{ isSaving ? t('saving') : $t(formType) }}</button>
       </template>
     </CommonModal>
 
@@ -74,8 +87,8 @@ import ProductForm from "@/components/Product/Form.vue"
 import CommonModal from "@/components/CommonModal.vue"
 
 import api from "@/service";
-import axios from "axios";
-import { productType, paginationType, tableType } from "@/types"
+import { getApiErrorMessage } from "@/service/errors"
+import type { productType, paginationType, tableType } from "@/types"
 
 defineOptions({
   name: 'ProductsView',
@@ -85,35 +98,37 @@ defineOptions({
 const { t } = useI18n()
 const store = useAppStore()
 
-let pagination = ref<paginationType>({ page: 1, limit: 20, count: 0, totalPage: 0 })
-let formType = ref<(string)>("create")
-let product = ref<Partial<productType>>({})
-let table = reactive<tableType<productType>>({
+const pagination = ref<paginationType>({ page: 1, limit: 20, count: 0, totalPage: 0 })
+const formType = ref("create")
+const product = ref<Partial<productType>>({})
+const isLoading = ref(false)
+const isSaving = ref(false)
+const loadError = ref<string | null>(null)
+const table = reactive<tableType<productType>>({
   items: [],
   headers: ['actions', 'id', 'name', 'picture', 'category'],
   actions: [{ text: 'update', func: itemAction }, { text: 'delete', func: itemAction }]
 })
 
-let picture = ref<Blob | null>();
-let pictureName = ref<string>("");
+const picture = ref<string>()
+const pictureName = ref("")
 
 function fileInput(file: File) {
-  const reader = new FileReader();
-  reader.addEventListener('load', readFile);
-  reader.readAsDataURL(file);
+  const reader = new FileReader()
+  reader.addEventListener('load', readFile)
+  reader.readAsDataURL(file)
 
   pictureName.value = file.name
 }
 function readFile(event: ProgressEvent<FileReader>) {
   const result = event.target?.result
-  if (typeof result === "string") picture.value = new Blob([result])
+  if (typeof result === "string") picture.value = result
 }
 
 async function itemAction() {
   const data = {
     ...product.value,
-    picture: picture.value,
-    picture_name: pictureName.value
+    ...(picture.value ? { picture: picture.value, picture_name: pictureName.value } : {}),
   }
 
   
@@ -123,6 +138,7 @@ async function itemAction() {
     data.category_id = Number(parenIdArr[0])
   }
 
+  isSaving.value = true
   try {
     let response
     switch (formType.value) {
@@ -146,18 +162,24 @@ async function itemAction() {
       document.querySelector<HTMLButtonElement>("#common-modal-close")?.click()
     }
   } catch (error) {
-    if (axios.isAxiosError(error) && error.response?.data?.message) {
-      store.addToast({ title: t('error'), text: error.response.data.message })
-    }
+    store.addToast({ title: t('error'), text: getApiErrorMessage(error, t('requestFailed')) })
+  } finally {
+    isSaving.value = false
   }
 }
 
 async function showModal(type: string, id: number) {
   product.value = {}
-  if (id > -1) {
-    await getItem(id)
-  }
+  picture.value = undefined
+  pictureName.value = ""
   formType.value = type
+  if (id > -1) {
+    try {
+      await getItem(id)
+    } catch (error) {
+      store.addToast({ title: t('error'), text: getApiErrorMessage(error, t('requestFailed')) })
+    }
+  }
 }
 
 async function getItem(id: number) {
@@ -166,15 +188,23 @@ async function getItem(id: number) {
     product.value = response.data.data
   }
 }
-onMounted(async () => {
-  await getItems()
+onMounted(() => {
+  void getItems(1, 20)
 })
 
-async function getItems(page = 1, limit = 20) {
-  const response = await api.get(`/api/products?page=${page}&limit=${limit}`)
-  if (response.status === 200) {
-    table.items = response.data.data
-    pagination.value = response.data.pagination
+async function getItems(page = pagination.value.page, limit = pagination.value.limit) {
+  isLoading.value = true
+  loadError.value = null
+  try {
+    const response = await api.get(`/api/products?page=${page}&limit=${limit}`)
+    if (response.status === 200) {
+      table.items = response.data.data
+      pagination.value = response.data.pagination
+    }
+  } catch (error) {
+    loadError.value = getApiErrorMessage(error, t('requestFailed'))
+  } finally {
+    isLoading.value = false
   }
 }
 
