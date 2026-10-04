@@ -142,4 +142,41 @@ describe("API application", () => {
 
     await app.close();
   });
+
+  it("rejects a product image without its filename before reaching the database", async () => {
+    const app = await buildApp({ logger: false });
+
+    const response = await app.inject({
+      method: "POST",
+      url: "/api/products",
+      payload: {
+        name: "Keyboard",
+        category_id: 1,
+        picture: "data:image/png;base64,aGVsbG8=",
+      },
+    });
+
+    expect(response.statusCode).toBe(400);
+    expect(response.json()).toEqual({ message: "Invalid picture payload" });
+
+    await app.close();
+  });
+
+  it("rejects a category image without its filename before reaching the database", async () => {
+    const app = await buildApp({ logger: false });
+
+    const response = await app.inject({
+      method: "POST",
+      url: "/api/categories",
+      payload: {
+        name: "Accessories",
+        picture: "data:image/png;base64,aGVsbG8=",
+      },
+    });
+
+    expect(response.statusCode).toBe(400);
+    expect(response.json()).toEqual({ message: "Invalid picture payload" });
+
+    await app.close();
+  });
 });

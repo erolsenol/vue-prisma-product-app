@@ -1,25 +1,29 @@
-import S from "fluent-json-schema";
+import { Type } from "@sinclair/typebox";
 
-export const ProductCreateSchema = {
-  body: S.object()
-    .additionalProperties(false)
-    .prop("name", S.string().minLength(1).required())
-    .prop("picture", S.string())
-    .prop("picture_name", S.string().pattern("^[A-Za-z0-9][A-Za-z0-9._-]*$"))
-    .prop("category_id", S.integer().minimum(1).required()),
-} as const;
+const pictureProperties = {
+  picture: Type.Optional(Type.String()),
+  picture_name: Type.Optional(Type.String({ pattern: "^[A-Za-z0-9][A-Za-z0-9._-]*$" })),
+};
 
-export const ProductUpdateSchema = {
-  params: S.object().prop("id", S.number().required()),
-  body: S.object()
-    .minProperties(1)
-    .additionalProperties(false)
-    .prop("name", S.string().minLength(1))
-    .prop("picture", S.string())
-    .prop("picture_name", S.string().pattern("^[A-Za-z0-9][A-Za-z0-9._-]*$"))
-    .prop("category_id", S.integer().minimum(1)),
-} as const;
+export const ProductCreateSchema = Type.Object(
+  {
+    name: Type.String({ minLength: 1 }),
+    ...pictureProperties,
+    category_id: Type.Integer({ minimum: 1 }),
+  },
+  { additionalProperties: false },
+);
 
-export const ProductGetSchema = {
-  params: S.object().prop("id", S.number().required()),
-} as const;
+export const ProductUpdateSchema = Type.Object(
+  {
+    name: Type.Optional(Type.String({ minLength: 1 })),
+    ...pictureProperties,
+    category_id: Type.Optional(Type.Integer({ minimum: 1 })),
+  },
+  { additionalProperties: false, minProperties: 1 },
+);
+
+export const ProductParamsIdSchema = Type.Object(
+  { id: Type.Integer({ minimum: 1 }) },
+  { additionalProperties: false },
+);

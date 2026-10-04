@@ -12,7 +12,7 @@ import {
   isValidPictureData,
 } from "../helpers";
 
-import { ProductType, ProductParamsIdType } from "types/products";
+import { ProductCreateType, ProductParamsIdType, ProductUpdateType } from "types/products";
 import { PaginationType } from "types/pagination";
 
 export const getAllProducts = async (
@@ -53,7 +53,7 @@ export const getAllProducts = async (
 };
 
 export const createProducts = async (
-  request: FastifyRequest<{ Body: ProductType }>,
+  request: FastifyRequest<{ Body: ProductCreateType }>,
   reply: FastifyReply
 ) => {
   try {
@@ -68,10 +68,7 @@ export const createProducts = async (
     const category = await prisma.category.findFirst({ where: { id: category_id, deleted: false } });
     if (!category) throw new HttpError(400, "Category not found");
 
-    if (picture !== undefined || picture_name !== undefined) {
-      if (!picture || !picture_name || !isValidPictureData(picture)) {
-        throw new HttpError(400, "Invalid picture payload");
-      }
+    if (picture !== undefined && picture_name !== undefined) {
       if (!(await pictureSave(picture, picture_name, "product"))) {
         throw new HttpError(400, "Picture could not be saved");
       }
@@ -92,7 +89,7 @@ export const createProducts = async (
 };
 
 export const updateProducts = async (
-  request: FastifyRequest<{ Body: ProductType; Params: ProductParamsIdType }>,
+  request: FastifyRequest<{ Body: ProductUpdateType; Params: ProductParamsIdType }>,
   reply: FastifyReply
 ) => {
   try {
@@ -113,7 +110,7 @@ export const updateProducts = async (
       if (!category) throw new HttpError(400, "Category not found");
     }
 
-    if (picture !== undefined || picture_name !== undefined) {
+    if (picture !== undefined && picture_name !== undefined) {
       if (!(await pictureSave(picture, picture_name, "product"))) {
         throw new HttpError(400, "Picture could not be saved");
       }

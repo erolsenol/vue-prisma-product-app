@@ -1,15 +1,6 @@
-import { Static, Type } from "@sinclair/typebox";
+import type { Static } from "@sinclair/typebox";
+import { CategoryCreateSchema, CategoryParamsIdSchema, CategoryUpdateSchema } from "../schemas/categories";
 
-export const Category = Type.Object({
-  name: Type.String(),
-  picture: Type.String(),
-  picture_name: Type.String(),
-  parent_id: Type.Number(),
-});
-
-export const CategoryParamsId = Type.Object({
-  id: Type.Number(),
-});
-
-export type CategoryType = Static<typeof Category>;
-export type CategoryParamsIdType = Static<typeof CategoryParamsId>;
+export type CategoryCreateType = Static<typeof CategoryCreateSchema>;
+export type CategoryUpdateType = Static<typeof CategoryUpdateSchema>;
+export type CategoryParamsIdType = Static<typeof CategoryParamsIdSchema>;

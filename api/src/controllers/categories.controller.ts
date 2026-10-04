@@ -12,7 +12,7 @@ import {
   isValidPictureData,
 } from "../helpers";
 
-import { CategoryType, CategoryParamsIdType } from "types/categories";
+import { CategoryCreateType, CategoryParamsIdType, CategoryUpdateType } from "types/categories";
 import { PaginationType } from "types/pagination";
 
 export const getAllCategories = async (
@@ -55,7 +55,7 @@ export const getAllCategories = async (
 };
 
 export const createCategories = async (
-  request: FastifyRequest<{ Body: CategoryType }>,
+  request: FastifyRequest<{ Body: CategoryCreateType }>,
   reply: FastifyReply
 ) => {
   try {
@@ -72,10 +72,7 @@ export const createCategories = async (
       if (!parent) throw new HttpError(400, "Parent category not found");
     }
 
-    if (picture !== undefined || picture_name !== undefined) {
-      if (!picture || !picture_name || !isValidPictureData(picture)) {
-        throw new HttpError(400, "Invalid picture payload");
-      }
+    if (picture !== undefined && picture_name !== undefined) {
       if (!(await pictureSave(picture, picture_name, "category"))) {
         throw new HttpError(400, "Picture could not be saved");
       }
@@ -96,7 +93,7 @@ export const createCategories = async (
 };
 
 export const updateCategories = async (
-  request: FastifyRequest<{ Body: CategoryType; Params: CategoryParamsIdType }>,
+  request: FastifyRequest<{ Body: CategoryUpdateType; Params: CategoryParamsIdType }>,
   reply: FastifyReply
 ) => {
   try {
@@ -122,7 +119,7 @@ export const updateCategories = async (
       ...(parent_id !== undefined ? { parent_id } : {}),
     };
 
-    if (picture !== undefined || picture_name !== undefined) {
+    if (picture !== undefined && picture_name !== undefined) {
       if (!(await pictureSave(picture, picture_name, "category"))) {
         throw new HttpError(400, "Picture could not be saved");
       }

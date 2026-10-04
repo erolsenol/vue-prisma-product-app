@@ -63,6 +63,7 @@ Apply database migrations with `pnpm db:migrate` before starting a deployed API.
 - Replaced Vue CLI/Webpack and Vuex with Vite and Pinia.
 - Added Pinia store tests and retained strict Vue SFC type checking.
 - Built the frontend image from the workspace lockfile and added same-origin API proxying plus SPA route fallback.
+- Aligned API request validation and TypeScript request types on shared TypeBox schemas.
 
 ### Next
 
