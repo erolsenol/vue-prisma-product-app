@@ -1,8 +1,9 @@
 import { FastifyInstance } from "fastify";
+import { TypeBoxTypeProvider } from "@fastify/type-provider-typebox";
 import {
-  CategoriesCreateSchema,
-  CategoriesUpdateSchema,
-  CategoriesGetSchema
+  CategoryCreateSchema,
+  CategoryParamsIdSchema,
+  CategoryUpdateSchema,
 } from "../schemas/categories";
 import { PaginationSchema } from "../schemas/pagination";
 import {
@@ -14,34 +15,35 @@ import {
 } from "../controllers/categories.controller";
 
 async function categoriesRouter(fastify: FastifyInstance) {
-  fastify.route({
+  const router = fastify.withTypeProvider<TypeBoxTypeProvider>();
+  router.route({
     method: "GET",
     url: "/",
     schema: { querystring: PaginationSchema },
     handler: getAllCategories,
   });
-  fastify.route({
+  router.route({
     method: "POST",
     url: "/",
-    schema: CategoriesCreateSchema,
+    schema: { body: CategoryCreateSchema },
     handler: createCategories,
   });
-  fastify.route({
+  router.route({
     method: "PUT",
     url: "/:id",
-    schema: CategoriesUpdateSchema,
+    schema: { params: CategoryParamsIdSchema, body: CategoryUpdateSchema },
     handler: updateCategories,
   });
-  fastify.route({
+  router.route({
     method: "GET",
     url: "/:id",
-    schema: CategoriesGetSchema,
+    schema: { params: CategoryParamsIdSchema },
     handler: getCategories,
   });
-  fastify.route({
+  router.route({
     method: "DELETE",
     url: "/:id",
-    schema: CategoriesGetSchema,
+    schema: { params: CategoryParamsIdSchema },
     handler: deleteCategories,
   });
 }

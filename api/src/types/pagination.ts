@@ -1,5 +1,4 @@
-export interface PaginationType {
-  page: number;
-  limit: number;
-  all: number;
-}
+import type { Static } from "@sinclair/typebox";
+import { PaginationSchema } from "../schemas/pagination";
+
+export type PaginationType = Static<typeof PaginationSchema>;

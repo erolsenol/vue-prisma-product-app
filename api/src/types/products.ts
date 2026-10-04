@@ -1,15 +1,6 @@
-import { Static, Type } from "@sinclair/typebox";
+import type { Static } from "@sinclair/typebox";
+import { ProductCreateSchema, ProductParamsIdSchema, ProductUpdateSchema } from "../schemas/products";
 
-export const Product = Type.Object({
-  name: Type.String(),
-  picture: Type.String(),
-  picture_name: Type.String(),
-  category_id: Type.Number(),
-});
-
-export const ProductParamsId = Type.Object({
-  id: Type.Number(),
-});
-
-export type ProductType = Static<typeof Product>;
-export type ProductParamsIdType = Static<typeof ProductParamsId>;
+export type ProductCreateType = Static<typeof ProductCreateSchema>;
+export type ProductUpdateType = Static<typeof ProductUpdateSchema>;
+export type ProductParamsIdType = Static<typeof ProductParamsIdSchema>;

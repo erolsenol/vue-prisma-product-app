@@ -1,25 +1,33 @@
-import S from "fluent-json-schema";
+import { Type } from "@sinclair/typebox";
 
-export const CategoriesCreateSchema = {
-  body: S.object()
-    .additionalProperties(false)
-    .prop("name", S.string().minLength(1).required())
-    .prop("picture", S.string())
-    .prop("picture_name", S.string().pattern("^[A-Za-z0-9][A-Za-z0-9._-]*$"))
-    .prop("parent_id", S.integer().minimum(1).raw({ nullable: true })),
-} as const;
+const parentId = Type.Optional(
+  Type.Union([Type.Integer({ minimum: 1 }), Type.Null()]),
+);
 
-export const CategoriesUpdateSchema = {
-  params: S.object().prop("id", S.number().required()),
-  body: S.object()
-    .minProperties(1)
-    .additionalProperties(false)
-    .prop("name", S.string().minLength(1))
-    .prop("picture", S.string())
-    .prop("picture_name", S.string().pattern("^[A-Za-z0-9][A-Za-z0-9._-]*$"))
-    .prop("parent_id", S.integer().minimum(1).raw({ nullable: true })),
-} as const;
+const pictureProperties = {
+  picture: Type.Optional(Type.String()),
+  picture_name: Type.Optional(Type.String({ pattern: "^[A-Za-z0-9][A-Za-z0-9._-]*$" })),
+};
 
-export const CategoriesGetSchema = {
-  params: S.object().prop("id", S.number().required()),
-} as const;
+export const CategoryCreateSchema = Type.Object(
+  {
+    name: Type.String({ minLength: 1 }),
+    ...pictureProperties,
+    parent_id: parentId,
+  },
+  { additionalProperties: false },
+);
+
+export const CategoryUpdateSchema = Type.Object(
+  {
+    name: Type.Optional(Type.String({ minLength: 1 })),
+    ...pictureProperties,
+    parent_id: Type.Optional(Type.Union([Type.Integer({ minimum: 1 }), Type.Null()])),
+  },
+  { additionalProperties: false, minProperties: 1 },
+);
+
+export const CategoryParamsIdSchema = Type.Object(
+  { id: Type.Integer({ minimum: 1 }) },
+  { additionalProperties: false },
+);
