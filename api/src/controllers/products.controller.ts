@@ -114,7 +114,6 @@ export const updateProducts = async (
       if (!(await pictureSave(picture, picture_name, "product"))) {
         throw new HttpError(400, "Picture could not be saved");
       }
-      await pictureDelete(oldProduct.picture, "product");
     }
 
     const data = {
@@ -127,6 +126,10 @@ export const updateProducts = async (
       where: { id },
       data,
     });
+
+    if (picture_name !== undefined && oldProduct.picture !== picture_name) {
+      await pictureDelete(oldProduct.picture, "product");
+    }
 
     reply.status(STANDARD.SUCCESS).send({ data: product });
   } catch (e) {

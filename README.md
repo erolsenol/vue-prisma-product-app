@@ -71,3 +71,7 @@ Apply database migrations with `pnpm db:migrate` before starting a deployed API.
 2. Add product/category E2E tests, authentication and authorization.
 3. Harden image storage and observability.
 4. Evaluate Nuxt 4 and a production database strategy when deployment requirements are defined.
+
+### Image updates
+
+Product and category images replaced with the same filename are retained. A differently named old image is removed after the database update succeeds. Database failures preserve the old image; a newly saved replacement may require cleanup after such a failure.

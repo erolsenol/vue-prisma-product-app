@@ -123,13 +123,16 @@ export const updateCategories = async (
       if (!(await pictureSave(picture, picture_name, "category"))) {
         throw new HttpError(400, "Picture could not be saved");
       }
-      await pictureDelete(oldCategory.picture, "category");
     }
 
     const category = await prisma.category.update({
       where: { id },
       data,
     });
+
+    if (picture_name !== undefined && oldCategory.picture !== picture_name) {
+      await pictureDelete(oldCategory.picture, "category");
+    }
 
     reply.status(STANDARD.SUCCESS).send({ data: category });
   } catch (e) {
